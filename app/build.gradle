@@ -45,6 +45,10 @@ dependencies {
 
     // ✅ Firebase Analytics (Recommended by Firebase setup)
     implementation 'com.google.firebase:firebase-analytics'
+
+    implementation 'com.google.firebase:firebase-database' // Firebase Realtime Database
+
+
 }
 
 
