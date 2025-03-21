@@ -5,6 +5,7 @@ pluginManagement {
         mavenCentral()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -12,5 +13,16 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
+
+buildscript {
+    repositories { // 🔥 Add repositories inside buildscript
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.15' // ✅ Correct location
+    }
+}
+
 rootProject.name = "BOOKRATE"
 include ':app'
