@@ -11,6 +11,7 @@ import com.example.bookrate.R;
 public class LoginActivity extends AppCompatActivity {
 
     // Definirea câmpurilor și butonului
+    // test commit
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
 
