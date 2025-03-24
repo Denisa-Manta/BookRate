@@ -3,7 +3,6 @@ package com.example.bookrate.activity;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -15,7 +14,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText emailEditText, passwordEditText;
     private Button loginButton;
-
     private FirebaseAuth mAuth;
 
     @Override
@@ -23,15 +21,15 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        // Initialize Firebase Auth
+        // Inițializare Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // Initialize UI elements
+        // Inițializare UI
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         loginButton = findViewById(R.id.loginButton);
 
-        // Set click listener for login button
+        // Click pe butonul de login
         loginButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
@@ -47,15 +45,22 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && mAuth.getCurrentUser() != null) {
+                    if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-
-                        // Redirect to main activity after successful login
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                        finish();
+                        if (user != null) {
+                            if (user.isEmailVerified()) {
+                                // Login reușit și email verificat
+                                Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, ReaderActivity.class));
+                                finish();
+                            } else {
+                                // Email-ul nu este verificat
+                                Toast.makeText(LoginActivity.this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show();
+                                mAuth.signOut(); // Deconectează utilizatorul dacă email-ul nu e verificat
+                            }
+                        }
                     } else {
-                        Toast.makeText(LoginActivity.this, "Login failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Login failed. Please check your credentials.", Toast.LENGTH_LONG).show();
                     }
                 });
     }

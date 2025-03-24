@@ -6,9 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".activity.RegisterActivity">
 
-    <!-- Email Field -->
-
-    <!-- Password Field -->
     <android.widget.EditText
         android:id="@+id/nameEditText"
         android:layout_width="0dp"
