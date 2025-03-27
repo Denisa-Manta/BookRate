@@ -52,6 +52,23 @@
                 android:text="Genre"
                 android:textSize="14sp"
                 android:layout_marginTop="2dp" />
+
+            <Spinner
+                android:id="@+id/bookStateSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:spinnerMode="dropdown" />
+
+            <RatingBar
+                android:id="@+id/bookRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:rating="0"
+                android:isIndicator="false"
+                android:layout_marginTop="6dp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

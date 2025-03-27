@@ -1,4 +1,4 @@
-// ✅ Updated ReaderActivity.java (no NonNull, fixed adapter import)
+// ✅ ReaderActivity.java with user-specific state & rating logic
 package com.example.bookrate.activity;
 
 import android.os.Bundle;
@@ -9,11 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookrate.R;
 import com.example.bookrate.adapter.BookAdapter;
 import com.example.bookrate.model.Book;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +25,11 @@ public class ReaderActivity extends AppCompatActivity {
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("books");
 
+    private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    private final DatabaseReference userBookStatesRef = FirebaseDatabase.getInstance(
+            "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("users").child(userId).child("bookStates");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class ReaderActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.bookRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        bookAdapter = new BookAdapter(bookList);
+        bookAdapter = new BookAdapter(bookList, userBookStatesRef);
         recyclerView.setAdapter(bookAdapter);
 
         fetchBooksFromFirebase();
@@ -49,6 +51,7 @@ public class ReaderActivity extends AppCompatActivity {
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     Book book = snap.getValue(Book.class);
                     if (book != null) {
+                        book.setId(snap.getKey());
                         bookList.add(book);
                     }
                 }
