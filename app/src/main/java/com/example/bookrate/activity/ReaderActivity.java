@@ -1,4 +1,3 @@
-// ✅ ReaderActivity.java with user-specific state & rating logic
 package com.example.bookrate.activity;
 
 import android.os.Bundle;
@@ -40,27 +39,55 @@ public class ReaderActivity extends AppCompatActivity {
         bookAdapter = new BookAdapter(bookList, userBookStatesRef);
         recyclerView.setAdapter(bookAdapter);
 
-        fetchBooksFromFirebase();
+        fetchBooksAndUserStates();
     }
 
-    private void fetchBooksFromFirebase() {
-        booksRef.addValueEventListener(new ValueEventListener() {
+    private void fetchBooksAndUserStates() {
+        // Fetch both books and user's state/rating
+        booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                bookList.clear();
-                for (DataSnapshot snap : snapshot.getChildren()) {
-                    Book book = snap.getValue(Book.class);
-                    if (book != null) {
-                        book.setId(snap.getKey());
-                        bookList.add(book);
+            public void onDataChange(DataSnapshot booksSnapshot) {
+                userBookStatesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot statesSnapshot) {
+                        bookList.clear();
+
+                        for (DataSnapshot snap : booksSnapshot.getChildren()) {
+                            Book book = snap.getValue(Book.class);
+                            if (book != null) {
+                                book.setId(snap.getKey());
+
+                                // Check if the user has state/rating saved for this book
+                                if (statesSnapshot.hasChild(book.getId())) {
+                                    DataSnapshot userBookData = statesSnapshot.child(book.getId());
+
+                                    if (userBookData.child("state").exists()) {
+                                        book.setState(userBookData.child("state").getValue(String.class));
+                                    }
+
+                                    if (userBookData.child("rating").exists()) {
+                                        Long rating = userBookData.child("rating").getValue(Long.class);
+                                        book.setRating(rating != null ? rating.intValue() : 0);
+                                    }
+                                }
+
+                                bookList.add(book);
+                            }
+                        }
+
+                        bookAdapter.notifyDataSetChanged();
                     }
-                }
-                bookAdapter.notifyDataSetChanged();
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Optional: handle user book state loading error
+                    }
+                });
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // Handle error
+                // Optional: handle book loading error
             }
         });
     }

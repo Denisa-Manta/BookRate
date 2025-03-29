@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -26,7 +25,6 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
 
-    // Regex pentru validarea parolei
     private static final Pattern PASSWORD_PATTERN =
             Pattern.compile("^(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$");
 
@@ -35,31 +33,24 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        // Initialize Firebase
         mAuth = FirebaseAuth.getInstance();
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/");
         databaseReference = database.getReference("users");
 
-        // UI Elements
         nameEditText = findViewById(R.id.nameEditText);
         emailEditText = findViewById(R.id.emailEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         phoneEditText = findViewById(R.id.phoneEditText);
         registerButton = findViewById(R.id.registerButton);
 
-        // Click pe butonul de înregistrare
         registerButton.setOnClickListener(v -> {
             String name = nameEditText.getText().toString().trim();
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
             String phone = phoneEditText.getText().toString().trim();
 
-            // Validare input
-            if (!validateInputs(name, email, password, phone)) {
-                return;
-            }
+            if (!validateInputs(name, email, password, phone)) return;
 
-            // Înregistrare utilizator
             registerUser(email, password, name, phone);
         });
     }
@@ -94,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
                     if (task.isSuccessful() && task.getResult() != null) {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            // Trimitere email de verificare
                             user.sendEmailVerification()
                                     .addOnSuccessListener(aVoid -> {
                                         saveUserToDatabase(user.getUid(), name, email, phone);

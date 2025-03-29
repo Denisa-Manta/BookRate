@@ -1,39 +1,35 @@
 package com.example.bookrate.model;
 
 public class Book {
-    private String id;         // 🔹 Unique Firebase key
+    private String id;         // 🔹 Firebase key for this book
     private String title;
     private String author;
     private String genre;
     private String imageUrl;
 
+    // These fields are user-specific and will be saved under users/<uid>/bookStates/<bookId>
     private String state;      // "Want to Read", "Currently Reading", "Read"
-    private int rating;        // 0 to 5
+    private int rating;        // 0 to 5 stars
 
-    // Required empty constructor for Firebase
-    public Book() {
-    }
+    // Default constructor for Firebase
+    public Book() {}
 
-    // Full constructor (imageUrl can be null if storage is disabled)
     public Book(String title, String author, String genre, String imageUrl) {
         this.title = title;
         this.author = author;
         this.genre = genre;
         this.imageUrl = imageUrl;
-        this.state = "Want to Read"; // Default
-        this.rating = 0;             // Default
+
+        // These are optional default values (not persisted globally)
+        this.state = "Want to Read";
+        this.rating = 0;
     }
 
-    // 🔹 ID Accessors
+    // 🔹 Getters
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    // 🔸 Standard Getters
     public String getTitle() {
         return title;
     }
@@ -58,7 +54,11 @@ public class Book {
         return rating;
     }
 
-    // 🔸 Standard Setters
+    // 🔸 Setters
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }

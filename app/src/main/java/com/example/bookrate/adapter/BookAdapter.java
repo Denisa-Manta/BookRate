@@ -1,4 +1,3 @@
-// ✅ Updated BookAdapter.java with state + rating logic (fixed)
 package com.example.bookrate.adapter;
 
 import android.view.LayoutInflater;
@@ -18,12 +17,13 @@ import com.example.bookrate.R;
 import com.example.bookrate.model.Book;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
 
     private final List<Book> bookList;
-
     private final DatabaseReference userBookStatesRef;
 
     public BookAdapter(List<Book> bookList, DatabaseReference userBookStatesRef) {
@@ -45,7 +45,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.authorText.setText(book.getAuthor());
         holder.genreText.setText(book.getGenre());
 
-        // Image loading
+        // Load image
         if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
             Glide.with(holder.itemView.getContext())
                     .load(book.getImageUrl())
@@ -55,44 +55,67 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             holder.bookImage.setImageResource(R.drawable.placeholder_image);
         }
 
-        // Spinner setup
+        // Spinner adapter
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 holder.itemView.getContext(),
                 R.array.book_states,
-                android.R.layout.simple_spinner_item);
+                android.R.layout.simple_spinner_item
+        );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         holder.bookStateSpinner.setAdapter(adapter);
 
-        // Set initial state
+        // Set current state and rating
         holder.bookStateSpinner.setSelection(adapter.getPosition(book.getState()));
         holder.bookRatingBar.setRating(book.getRating());
         holder.bookRatingBar.setVisibility("Read".equals(book.getState()) ? View.VISIBLE : View.GONE);
 
-        // Spinner change listener
+        // Spinner listener
         holder.bookStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean firstCall = true;
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                String selectedState = parent.getItemAtPosition(pos).toString();
-                book.setState(selectedState);
+                if (firstCall) {
+                    firstCall = false;
+                    return; // Skip first auto-trigger
+                }
 
-                if (!"Read".equals(selectedState)) {
+                String newState = parent.getItemAtPosition(pos).toString();
+                book.setState(newState);
+
+                if (!"Read".equals(newState)) {
                     book.setRating(0);
                     holder.bookRatingBar.setRating(0);
                     holder.bookRatingBar.setVisibility(View.GONE);
                 } else {
                     holder.bookRatingBar.setVisibility(View.VISIBLE);
                 }
+
+                // Persist state & rating
+                saveStateAndRating(book);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         });
 
+        // RatingBar listener
         holder.bookRatingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
-            if ("Read".equals(book.getState())) {
-                book.setRating((int)rating);
+            if (fromUser && "Read".equals(book.getState())) {
+                book.setRating((int) rating);
+                saveStateAndRating(book);
             }
         });
+    }
+
+    private void saveStateAndRating(Book book) {
+        if (book.getId() == null) return;
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("state", book.getState());
+        map.put("rating", book.getRating());
+
+        userBookStatesRef.child(book.getId()).updateChildren(map);
     }
 
     @Override
