@@ -1,6 +1,9 @@
 package com.example.bookrate.activity;
 
 import android.os.Bundle;
+import android.widget.Button;
+import android.widget.EditText;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,8 +20,11 @@ import java.util.List;
 public class ReaderActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
+    private EditText searchEditText;
+    private Button searchButton;
     private BookAdapter bookAdapter;
     private List<Book> bookList = new ArrayList<>();
+    private List<Book> fullBookList = new ArrayList<>(); // for search reset
 
     private final DatabaseReference booksRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
@@ -36,14 +42,35 @@ public class ReaderActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.bookRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        searchEditText = findViewById(R.id.searchEditText);
+        searchButton = findViewById(R.id.searchButton);
+
         bookAdapter = new BookAdapter(bookList, userBookStatesRef);
         recyclerView.setAdapter(bookAdapter);
 
         fetchBooksAndUserStates();
+
+        searchButton.setOnClickListener(v -> {
+            String query = searchEditText.getText().toString().trim().toLowerCase();
+            bookList.clear();
+
+            if (query.isEmpty()) {
+                bookList.addAll(fullBookList);
+            } else {
+                for (Book book : fullBookList) {
+                    if (book.getTitle().toLowerCase().contains(query) ||
+                            book.getAuthor().toLowerCase().contains(query)) {
+                        bookList.add(book);
+                    }
+                }
+            }
+
+            bookAdapter.notifyDataSetChanged();
+        });
     }
 
     private void fetchBooksAndUserStates() {
-        // Fetch both books and user's state/rating
         booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot booksSnapshot) {
@@ -51,13 +78,13 @@ public class ReaderActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot statesSnapshot) {
                         bookList.clear();
+                        fullBookList.clear();
 
                         for (DataSnapshot snap : booksSnapshot.getChildren()) {
                             Book book = snap.getValue(Book.class);
                             if (book != null) {
                                 book.setId(snap.getKey());
 
-                                // Check if the user has state/rating saved for this book
                                 if (statesSnapshot.hasChild(book.getId())) {
                                     DataSnapshot userBookData = statesSnapshot.child(book.getId());
 
@@ -72,6 +99,7 @@ public class ReaderActivity extends AppCompatActivity {
                                 }
 
                                 bookList.add(book);
+                                fullBookList.add(book);
                             }
                         }
 
@@ -79,16 +107,12 @@ public class ReaderActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled(DatabaseError error) {
-                        // Optional: handle user book state loading error
-                    }
+                    public void onCancelled(DatabaseError error) {}
                 });
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
-                // Optional: handle book loading error
-            }
+            public void onCancelled(DatabaseError error) {}
         });
     }
 }
