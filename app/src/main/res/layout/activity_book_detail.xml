@@ -79,5 +79,34 @@
             android:text="Average: 0.0"
             android:textSize="16sp"
             android:layout_marginTop="4dp" />
+
+        <!-- NEW: Write Review Button -->
+        <Button
+            android:id="@+id/writeReviewButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Write a Review"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+        <!-- NEW: Reviews Section Header -->
+        <TextView
+            android:id="@+id/reviewSectionTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reviews"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
+
+        <!-- NEW: Reviews List Container -->
+        <LinearLayout
+            android:id="@+id/reviewsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>

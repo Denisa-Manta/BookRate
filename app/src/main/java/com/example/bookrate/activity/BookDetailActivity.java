@@ -1,11 +1,9 @@
 package com.example.bookrate.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.ImageView;
-import android.widget.RatingBar;
-import android.widget.Spinner;
-import android.widget.TextView;
-import android.widget.ArrayAdapter;
+import android.view.View;
+import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,20 +14,29 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 public class BookDetailActivity extends AppCompatActivity {
 
-    private TextView detailBookTitle, detailBookAuthor, detailBookGenre, averageRatingText;
+    private TextView detailBookTitle, detailBookAuthor, detailBookGenre, averageRatingText, reviewSectionTitle;
     private ImageView detailBookImage;
     private Spinner detailBookStateSpinner;
     private RatingBar detailUserRatingBar, detailAverageRatingBar;
+    private Button writeReviewButton;
+    private LinearLayout reviewsContainer;
 
     private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/").getReference();
 
     private Book book;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadReviews(); // refresh every time the screen becomes visible
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,9 @@ public class BookDetailActivity extends AppCompatActivity {
         detailUserRatingBar = findViewById(R.id.detailUserRatingBar);
         detailAverageRatingBar = findViewById(R.id.detailAverageRatingBar);
         averageRatingText = findViewById(R.id.averageRatingText);
+        writeReviewButton = findViewById(R.id.writeReviewButton);
+        reviewSectionTitle = findViewById(R.id.reviewSectionTitle);
+        reviewsContainer = findViewById(R.id.reviewsContainer);
 
         book = (Book) getIntent().getSerializableExtra("book");
         if (book == null) return;
@@ -58,17 +68,18 @@ public class BookDetailActivity extends AppCompatActivity {
             detailBookImage.setImageResource(R.drawable.placeholder_image);
         }
 
-        // Spinner setup
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this, R.array.book_states, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         detailBookStateSpinner.setAdapter(adapter);
         detailBookStateSpinner.setSelection(getIndexForState(book.getState()));
 
+        updateReviewVisibility(book.getState());
+
         detailUserRatingBar.setRating(book.getRating());
         detailUserRatingBar.setIsIndicator(false);
         detailUserRatingBar.setStepSize(1);
-        detailUserRatingBar.setVisibility("Read".equals(book.getState()) ? android.view.View.VISIBLE : android.view.View.GONE);
+        detailUserRatingBar.setVisibility("Read".equals(book.getState()) ? View.VISIBLE : View.GONE);
 
         detailUserRatingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
             if (fromUser && "Read".equals(book.getState())) {
@@ -77,11 +88,11 @@ public class BookDetailActivity extends AppCompatActivity {
             }
         });
 
-        detailBookStateSpinner.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+        detailBookStateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             boolean firstLoad = true;
 
             @Override
-            public void onItemSelected(android.widget.AdapterView<?> parent, android.view.View view, int pos, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 if (firstLoad) {
                     firstLoad = false;
                     return;
@@ -93,19 +104,36 @@ public class BookDetailActivity extends AppCompatActivity {
                 if (!"Read".equals(newState)) {
                     book.setRating(0);
                     detailUserRatingBar.setRating(0);
-                    detailUserRatingBar.setVisibility(android.view.View.GONE);
-                } else {
-                    detailUserRatingBar.setVisibility(android.view.View.VISIBLE);
                 }
 
+                detailUserRatingBar.setVisibility("Read".equals(newState) ? View.VISIBLE : View.GONE);
+                updateReviewVisibility(newState);
                 saveUserStateAndRating();
             }
 
             @Override
-            public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        writeReviewButton.setOnClickListener(v -> {
+            Intent intent = new Intent(BookDetailActivity.this, AddReviewActivity.class);
+            intent.putExtra("bookId", book.getId());
+            startActivity(intent);
         });
 
         loadAverageRating();
+    }
+
+    private void updateReviewVisibility(String state) {
+        if ("Read".equals(state)) {
+            writeReviewButton.setVisibility(View.VISIBLE);
+            reviewSectionTitle.setVisibility(View.VISIBLE);
+            reviewsContainer.setVisibility(View.VISIBLE);
+        } else {
+            writeReviewButton.setVisibility(View.GONE);
+            reviewSectionTitle.setVisibility(View.GONE);
+            reviewsContainer.setVisibility(View.GONE);
+        }
     }
 
     private int getIndexForState(String state) {
@@ -153,4 +181,47 @@ public class BookDetailActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {}
         });
     }
+
+    private void loadReviews() {
+        reviewsContainer.removeAllViews();
+
+        dbRef.child("reviews").child(book.getId())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        for (DataSnapshot reviewSnap : snapshot.getChildren()) {
+                            String userId = reviewSnap.getKey(); // userId is the key now
+                            String content = reviewSnap.child("content").getValue(String.class);
+
+                            if (userId == null || content == null || content.trim().isEmpty()) {
+                                continue;
+                            }
+
+                            dbRef.child("users").child(userId).child("name")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot nameSnap) {
+                                            String userName = nameSnap.getValue(String.class);
+                                            if (userName == null || userName.trim().isEmpty()) {
+                                                userName = "Anonymous";
+                                            }
+
+                                            TextView reviewText = new TextView(BookDetailActivity.this);
+                                            reviewText.setText(userName + ": " + content);
+                                            reviewText.setPadding(8, 8, 8, 8);
+                                            reviewText.setTextSize(14f);
+                                            reviewsContainer.addView(reviewText);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError error) {}
+                                    });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {}
+                });
+    }
+
 }
