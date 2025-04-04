@@ -1,6 +1,7 @@
 package com.example.bookrate.model;
+import java.io.Serializable;
 
-public class Book {
+public class Book implements Serializable {
     private String id;         // 🔹 Firebase key for this book
     private String title;
     private String author;

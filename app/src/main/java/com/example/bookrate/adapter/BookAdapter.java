@@ -1,5 +1,6 @@
 package com.example.bookrate.adapter;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bookrate.R;
+import com.example.bookrate.activity.BookDetailActivity;
 import com.example.bookrate.model.Book;
 import com.google.firebase.database.DatabaseReference;
 
@@ -77,7 +79,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 if (firstCall) {
                     firstCall = false;
-                    return; // Skip first auto-trigger
+                    return;
                 }
 
                 String newState = parent.getItemAtPosition(pos).toString();
@@ -91,7 +93,6 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                     holder.bookRatingBar.setVisibility(View.VISIBLE);
                 }
 
-                // Persist state & rating
                 saveStateAndRating(book);
             }
 
@@ -105,6 +106,13 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                 book.setRating((int) rating);
                 saveStateAndRating(book);
             }
+        });
+
+        // 🔥 NEW: Handle click → go to BookDetailActivity
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), BookDetailActivity.class);
+            intent.putExtra("book", book);
+            holder.itemView.getContext().startActivity(intent);
         });
     }
 

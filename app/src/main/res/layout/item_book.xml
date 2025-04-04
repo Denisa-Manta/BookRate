@@ -68,7 +68,8 @@
                 android:stepSize="1"
                 android:rating="0"
                 android:isIndicator="false"
-                android:layout_marginTop="6dp" />
+                android:layout_marginTop="6dp"
+                style="?android:attr/ratingBarStyleSmall" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

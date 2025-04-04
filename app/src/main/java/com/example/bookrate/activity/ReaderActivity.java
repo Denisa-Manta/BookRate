@@ -70,6 +70,13 @@ public class ReaderActivity extends AppCompatActivity {
         });
     }
 
+    // 🔁 Refresh list when returning from detail activity
+    @Override
+    protected void onResume() {
+        super.onResume();
+        fetchBooksAndUserStates();
+    }
+
     private void fetchBooksAndUserStates() {
         booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
