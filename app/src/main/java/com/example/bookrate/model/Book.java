@@ -1,12 +1,14 @@
 package com.example.bookrate.model;
+
 import java.io.Serializable;
 
 public class Book implements Serializable {
-    private String id;         // 🔹 Firebase key for this book
+    private String id;         // Firebase key for this book
     private String title;
     private String author;
     private String genre;
     private String imageUrl;
+    private String authorId;
 
     // These fields are user-specific and will be saved under users/<uid>/bookStates/<bookId>
     private String state;      // "Want to Read", "Currently Reading", "Read"
@@ -15,13 +17,15 @@ public class Book implements Serializable {
     // Default constructor for Firebase
     public Book() {}
 
-    public Book(String title, String author, String genre, String imageUrl) {
+    // Updated constructor to support authorId
+    public Book(String title, String author, String genre, String imageUrl, String authorId) {
         this.title = title;
         this.author = author;
         this.genre = genre;
         this.imageUrl = imageUrl;
+        this.authorId = authorId;
 
-        // These are optional default values (not persisted globally)
+        // Default user-specific state
         this.state = "Want to Read";
         this.rating = 0;
     }
@@ -55,6 +59,10 @@ public class Book implements Serializable {
         return rating;
     }
 
+    public String getAuthorId() {
+        return authorId;
+    }
+
     // 🔸 Setters
     public void setId(String id) {
         this.id = id;
@@ -82,5 +90,9 @@ public class Book implements Serializable {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public void setAuthorId(String authorId) {
+        this.authorId = authorId;
     }
 }

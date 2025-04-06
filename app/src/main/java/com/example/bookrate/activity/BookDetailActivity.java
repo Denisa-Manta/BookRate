@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class BookDetailActivity extends AppCompatActivity {
@@ -190,7 +189,7 @@ public class BookDetailActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         for (DataSnapshot reviewSnap : snapshot.getChildren()) {
-                            String userId = reviewSnap.getKey(); // userId is the key now
+                            String userId = reviewSnap.getKey();
                             String content = reviewSnap.child("content").getValue(String.class);
 
                             if (userId == null || content == null || content.trim().isEmpty()) {
@@ -223,5 +222,4 @@ public class BookDetailActivity extends AppCompatActivity {
                     public void onCancelled(DatabaseError error) {}
                 });
     }
-
 }

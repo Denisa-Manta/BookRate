@@ -10,8 +10,7 @@ import android.widget.Toast;
 import com.example.bookrate.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -47,11 +46,8 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        if (user != null && user.isEmailVerified()) {
-                            checkUserRole(user.getUid());
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show();
-                            mAuth.signOut();
+                        if (user != null) {
+                            checkUserRole(user.getUid(), user);
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, "Login failed. Please check your credentials.", Toast.LENGTH_LONG).show();
@@ -59,23 +55,46 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void checkUserRole(String uid) {
+    private void checkUserRole(String uid, FirebaseUser user) {
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/");
-        DatabaseReference userRef = database.getReference("users").child(uid).child("role");
+        DatabaseReference userRef = database.getReference("users").child(uid);
 
         userRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String role = String.valueOf(task.getResult().getValue());
-                if ("admin".equals(role)) {
-                    Toast.makeText(LoginActivity.this, "Welcome, Admin!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, AdminActivity.class));
-                } else {
-                    Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(LoginActivity.this, ReaderActivity.class));
+            if (task.isSuccessful() && task.getResult().exists()) {
+                DataSnapshot snapshot = task.getResult();
+                String role = String.valueOf(snapshot.child("role").getValue());
+
+                switch (role) {
+                    case "admin":
+                        Toast.makeText(this, "Welcome, Admin!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, AdminActivity.class));
+                        break;
+
+                    case "author":
+                        Toast.makeText(this, "Welcome, Author!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, AuthorActivity.class));
+                        break;
+
+                    case "pending_author":
+                        Toast.makeText(this, "Your author account is pending approval.", Toast.LENGTH_LONG).show();
+                        mAuth.signOut();
+                        break;
+
+                    default:
+                        if (user.isEmailVerified()) {
+                            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(this, ReaderActivity.class));
+                        } else {
+                            Toast.makeText(this, "Please verify your email before logging in.", Toast.LENGTH_LONG).show();
+                            mAuth.signOut();
+                        }
+                        break;
                 }
+
                 finish();
             } else {
-                Toast.makeText(LoginActivity.this, "Failed to fetch role", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Failed to fetch user data", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
             }
         });
     }

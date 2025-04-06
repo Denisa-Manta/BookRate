@@ -10,6 +10,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BOOKRATE">
         <activity
+            android:name=".activity.BookDetailAuthorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".adapter.AuthorPendingAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AuthorBookAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AuthorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.PendingAuthorsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AuthorRegisterActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.AddReviewActivity"
             android:exported="false" />
         <activity
