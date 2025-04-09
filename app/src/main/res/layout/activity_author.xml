@@ -24,4 +24,14 @@
         android:layout_weight="1"
         android:scrollbars="vertical" />
 
+    <ImageButton
+        android:id="@+id/openChatRequestsButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_dialog_email"
+        android:contentDescription="Open Chat Requests" />
+
 </LinearLayout>

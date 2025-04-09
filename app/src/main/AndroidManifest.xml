@@ -10,6 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BOOKRATE">
         <activity
+            android:name=".activity.AuthorChatListActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ChatActivity"
+            android:exported="false" />
+        <activity
+            android:name=".model.ChatMessage"
+            android:exported="false" />
+        <activity
+            android:name=".activity.AuthorChatRequestsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.ChatRequestActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.BookDetailAuthorActivity"
             android:exported="false" />
         <activity

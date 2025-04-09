@@ -80,7 +80,15 @@
             android:textSize="16sp"
             android:layout_marginTop="4dp" />
 
-        <!-- NEW: Write Review Button -->
+        <!-- ✅ NEW: Start Chat Button -->
+        <Button
+            android:id="@+id/startChatButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Start chatting with the author"
+            android:layout_marginTop="12dp"
+            android:visibility="gone" />
+
         <Button
             android:id="@+id/writeReviewButton"
             android:layout_width="match_parent"
@@ -89,7 +97,6 @@
             android:layout_marginTop="16dp"
             android:visibility="gone" />
 
-        <!-- NEW: Reviews Section Header -->
         <TextView
             android:id="@+id/reviewSectionTitle"
             android:layout_width="wrap_content"
@@ -100,7 +107,6 @@
             android:layout_marginTop="16dp"
             android:visibility="gone" />
 
-        <!-- NEW: Reviews List Container -->
         <LinearLayout
             android:id="@+id/reviewsContainer"
             android:layout_width="match_parent"

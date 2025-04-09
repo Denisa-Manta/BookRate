@@ -1,6 +1,8 @@
 package com.example.bookrate.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,12 @@ public class AuthorActivity extends AppCompatActivity {
         bookList = new ArrayList<>();
         bookAdapter = new AuthorBookAdapter(bookList);
         authorBooksRecyclerView.setAdapter(bookAdapter);
+
+        ImageButton openChatRequestsButton = findViewById(R.id.openChatRequestsButton);
+        openChatRequestsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AuthorActivity.this, AuthorChatRequestsActivity.class);
+            startActivity(intent);
+        });
 
         loadBooks();
     }

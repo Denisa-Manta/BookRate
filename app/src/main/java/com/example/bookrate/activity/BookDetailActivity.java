@@ -22,7 +22,7 @@ public class BookDetailActivity extends AppCompatActivity {
     private ImageView detailBookImage;
     private Spinner detailBookStateSpinner;
     private RatingBar detailUserRatingBar, detailAverageRatingBar;
-    private Button writeReviewButton;
+    private Button writeReviewButton, startChatButton;
     private LinearLayout reviewsContainer;
 
     private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -34,7 +34,7 @@ public class BookDetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadReviews(); // refresh every time the screen becomes visible
+        loadReviews();
     }
 
     @Override
@@ -51,6 +51,7 @@ public class BookDetailActivity extends AppCompatActivity {
         detailAverageRatingBar = findViewById(R.id.detailAverageRatingBar);
         averageRatingText = findViewById(R.id.averageRatingText);
         writeReviewButton = findViewById(R.id.writeReviewButton);
+        startChatButton = findViewById(R.id.startChatButton);
         reviewSectionTitle = findViewById(R.id.reviewSectionTitle);
         reviewsContainer = findViewById(R.id.reviewsContainer);
 
@@ -80,6 +81,21 @@ public class BookDetailActivity extends AppCompatActivity {
         detailUserRatingBar.setStepSize(1);
         detailUserRatingBar.setVisibility("Read".equals(book.getState()) ? View.VISIBLE : View.GONE);
 
+        // Show chat button only if book is in "Read" state
+        if ("Read".equals(book.getState())) {
+            startChatButton.setVisibility(View.VISIBLE);
+            startChatButton.setOnClickListener(v -> {
+                Intent intent = new Intent(BookDetailActivity.this, ChatRequestActivity.class);
+                intent.putExtra("book", book); // ✅ send the book!
+                intent.putExtra("authorName", book.getAuthor());
+                intent.putExtra("bookId", book.getId());
+                intent.putExtra("bookTitle", book.getTitle());
+                startActivity(intent);
+            });
+        } else {
+            startChatButton.setVisibility(View.GONE);
+        }
+
         detailUserRatingBar.setOnRatingBarChangeListener((bar, rating, fromUser) -> {
             if (fromUser && "Read".equals(book.getState())) {
                 book.setRating((int) rating);
@@ -106,6 +122,7 @@ public class BookDetailActivity extends AppCompatActivity {
                 }
 
                 detailUserRatingBar.setVisibility("Read".equals(newState) ? View.VISIBLE : View.GONE);
+                startChatButton.setVisibility("Read".equals(newState) ? View.VISIBLE : View.GONE);
                 updateReviewVisibility(newState);
                 saveUserStateAndRating();
             }
