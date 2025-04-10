@@ -83,6 +83,7 @@ public class ChatRequestActivity extends AppCompatActivity {
             Map<String, Object> requestDataMessage = new HashMap<>();
             requestDataMessage.put("authorName", book.getAuthor());
             requestDataMessage.put("requesterName", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+            requestDataMessage.put("message", message);
 
             dbRef.child("chat_requests").child(requestId).setValue(requestData)
                     .addOnSuccessListener(unused -> {

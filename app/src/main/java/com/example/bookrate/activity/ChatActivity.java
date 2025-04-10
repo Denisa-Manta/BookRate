@@ -55,21 +55,41 @@ public class ChatActivity extends AppCompatActivity {
 
         sendChatMessageButton.setOnClickListener(v -> sendMessage());
 
-        loadMessages();
+//        loadMessages();
     }
 
     private void loadMessages() {
-        dbRef.child("messages").child(senderName).child(requesterName)
-                .addValueEventListener(new ValueEventListener() {
+        String requestId = getIntent().getStringExtra("requestId");
+
+        if (requestId == null) {
+            Toast.makeText(this, "Missing request ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        dbRef.child("messages").child(requestId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         messages.clear();
-                        for (DataSnapshot msgSnap : snapshot.getChildren()) {
-                            ChatMessage msg = msgSnap.getValue(ChatMessage.class);
-                            if (msg != null) {
-                                messages.add(msg);
+
+                        if (snapshot.exists()) {
+                            // Since message is stored as a single object, not a list
+                            String author = snapshot.child("authorName").getValue(String.class);
+                            String user = snapshot.child("requesterName").getValue(String.class);
+                            String text = snapshot.child("message").getValue(String.class);
+
+                            if (author != null && user != null && text != null) {
+                                // We'll treat the original message as sent by the user (requester)
+                                ChatMessage first = new ChatMessage(
+                                        user,  // sender
+                                        author,  // receiver
+                                        text,
+                                        System.currentTimeMillis()
+                                );
+                                messages.add(first);
                             }
                         }
+
                         adapter.notifyDataSetChanged();
                         chatRecyclerView.scrollToPosition(messages.size() - 1);
                     }
@@ -80,21 +100,28 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    
     private void sendMessage() {
         String content = messageInput.getText().toString().trim();
         if (content.isEmpty()) return;
 
-        String messageId = dbRef.child("messages").child(senderName).child(requesterName).push().getKey();
+        String requestId = getIntent().getStringExtra("requestId");
+        if (requestId == null) {
+            Toast.makeText(this, "Missing request ID", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String messageId = dbRef.child("messages").child(requestId).child("thread").push().getKey();
         if (messageId == null) return;
 
         ChatMessage message = new ChatMessage(senderName, requesterName, content, System.currentTimeMillis());
 
-        dbRef.child("messages").child(senderName).child(requesterName).child(messageId)
+        dbRef.child("messages").child(requestId).child("thread").child(messageId)
                 .setValue(message)
                 .addOnSuccessListener(aVoid -> messageInput.setText(""))
                 .addOnFailureListener(e ->
                         Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
                 );
     }
+
 }
