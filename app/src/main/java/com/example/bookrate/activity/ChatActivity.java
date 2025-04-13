@@ -26,6 +26,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private String senderName;
     private String requesterName;
+    private String requestId;
 
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -40,76 +41,81 @@ public class ChatActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.chatMessageInput);
         sendChatMessageButton = findViewById(R.id.sendChatMessageButton);
 
-        senderName = getIntent().getStringExtra("authorName");  // author
-        requesterName = getIntent().getStringExtra("requesterName");  // user
+        senderName = getIntent().getStringExtra("authorName");
+        requesterName = getIntent().getStringExtra("requesterName");
+        requestId = getIntent().getStringExtra("requestId");
 
-        if (senderName == null || requesterName == null) {
-            Toast.makeText(this, "Missing names for chat", Toast.LENGTH_SHORT).show();
+        if (senderName == null || requesterName == null || requestId == null) {
+            Toast.makeText(this, "Missing chat info", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        adapter = new ChatMessageAdapter(messages, senderName);  // sender is this device's name
+        adapter = new ChatMessageAdapter(messages, senderName);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.setAdapter(adapter);
 
         sendChatMessageButton.setOnClickListener(v -> sendMessage());
 
-//        loadMessages();
+        loadMessages();
     }
 
     private void loadMessages() {
-        String requestId = getIntent().getStringExtra("requestId");
-
-        if (requestId == null) {
-            Toast.makeText(this, "Missing request ID", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+        // ✅ Step 1: Load the initial message (first message written by user)
         dbRef.child("messages").child(requestId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         messages.clear();
 
-                        if (snapshot.exists()) {
-                            // Since message is stored as a single object, not a list
-                            String author = snapshot.child("authorName").getValue(String.class);
-                            String user = snapshot.child("requesterName").getValue(String.class);
-                            String text = snapshot.child("message").getValue(String.class);
+                        String author = snapshot.child("authorName").getValue(String.class);
+                        String user = snapshot.child("requesterName").getValue(String.class);
+                        String text = snapshot.child("message").getValue(String.class);
 
-                            if (author != null && user != null && text != null) {
-                                // We'll treat the original message as sent by the user (requester)
-                                ChatMessage first = new ChatMessage(
-                                        user,  // sender
-                                        author,  // receiver
-                                        text,
-                                        System.currentTimeMillis()
-                                );
-                                messages.add(first);
-                            }
+                        if (author != null && user != null && text != null) {
+                            ChatMessage first = new ChatMessage(
+                                    user, author, text, System.currentTimeMillis()
+                            );
+                            messages.add(first);
+                            adapter.notifyDataSetChanged();
                         }
 
+                        // ✅ Step 2: Start listening for conversation under /thread
+                        listenToThread();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Toast.makeText(ChatActivity.this, "Failed to load initial message", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void listenToThread() {
+        dbRef.child("messages").child(requestId).child("thread")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        for (DataSnapshot msgSnap : snapshot.getChildren()) {
+                            ChatMessage msg = msgSnap.getValue(ChatMessage.class);
+                            if (msg != null && !messages.contains(msg)) {
+                                messages.add(msg);
+                            }
+                        }
                         adapter.notifyDataSetChanged();
                         chatRecyclerView.scrollToPosition(messages.size() - 1);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError error) {
-                        Toast.makeText(ChatActivity.this, "Failed to load messages", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ChatActivity.this, "Failed to load chat thread", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    
+
     private void sendMessage() {
         String content = messageInput.getText().toString().trim();
         if (content.isEmpty()) return;
-
-        String requestId = getIntent().getStringExtra("requestId");
-        if (requestId == null) {
-            Toast.makeText(this, "Missing request ID", Toast.LENGTH_SHORT).show();
-            return;
-        }
 
         String messageId = dbRef.child("messages").child(requestId).child("thread").push().getKey();
         if (messageId == null) return;
@@ -123,5 +129,4 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
                 );
     }
-
 }
