@@ -21,6 +21,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText messageInput;
     private Button sendChatMessageButton;
     private ChatMessageAdapter adapter;
+    private ChatMessage initialMessage;
 
     private final List<ChatMessage> messages = new ArrayList<>();
 
@@ -96,9 +97,10 @@ public class ChatActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+                        messages.clear();
                         for (DataSnapshot msgSnap : snapshot.getChildren()) {
                             ChatMessage msg = msgSnap.getValue(ChatMessage.class);
-                            if (msg != null && !messages.contains(msg)) {
+                            if (msg != null) {
                                 messages.add(msg);
                             }
                         }
@@ -112,6 +114,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
     }
+
 
     private void sendMessage() {
         String content = messageInput.getText().toString().trim();

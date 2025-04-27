@@ -40,7 +40,7 @@ public class AuthorChatRequestsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.chatRequestsRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new ChatRequestAdapter(requests, new OnChatRequestActionListener() {
+        adapter = new ChatRequestAdapter(requests, true, new OnChatRequestActionListener() {
             @Override
             public void onAccept(String requestId) {
                 for (ChatRequest req : requests) {
@@ -55,7 +55,7 @@ public class AuthorChatRequestsActivity extends AppCompatActivity {
             public void onReject(String requestId) {
                 handleReject(requestId);
             }
-        });
+        }, null);
 
         recyclerView.setAdapter(adapter);
         loadChatRequests();

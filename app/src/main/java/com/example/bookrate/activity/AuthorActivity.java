@@ -50,6 +50,12 @@ public class AuthorActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        ImageButton openActiveChatsButton = findViewById(R.id.openActiveChatsButton);
+        openActiveChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AuthorActivity.this, AuthorAcceptedChatsActivity.class);
+            startActivity(intent);
+        });
+
         loadBooks();
     }
 

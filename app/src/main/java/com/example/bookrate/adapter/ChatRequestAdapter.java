@@ -15,78 +15,75 @@ import com.example.bookrate.util.OnChatRequestActionListener;
 
 import java.util.List;
 
-public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.ViewHolder> {
+public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.RequestViewHolder> {
 
-    private final List<ChatRequest> chatRequests;
-    private final OnChatRequestActionListener actionListener;
+    private final List<ChatRequest> requestList;
+    private final OnChatRequestActionListener listener;
     private final ChatClickListener clickListener;
+    private final boolean showActions;
 
-    public interface ChatClickListener {
-        void onClick(ChatRequest request);
-    }
-
-    // Constructor for Accept/Reject flow
-    public ChatRequestAdapter(List<ChatRequest> chatRequests, OnChatRequestActionListener actionListener) {
-        this.chatRequests = chatRequests;
-        this.actionListener = actionListener;
-        this.clickListener = null;
-    }
-
-    // Constructor for Click-only flow
-    public ChatRequestAdapter(List<ChatRequest> chatRequests, ChatClickListener clickListener) {
-        this.chatRequests = chatRequests;
+    public ChatRequestAdapter(List<ChatRequest> requestList, boolean showActions, OnChatRequestActionListener listener, ChatClickListener clickListener) {
+        this.requestList = requestList;
+        this.listener = listener;
         this.clickListener = clickListener;
-        this.actionListener = null;
+        this.showActions = showActions;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RequestViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_chat_request, parent, false);
-        return new ViewHolder(view);
+        return new RequestViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        ChatRequest request = chatRequests.get(position);
-
-        holder.requesterName.setText("From: " + request.getRequesterName());
-        holder.bookTitle.setText("Book: " + request.getBookTitle());
-        holder.message.setText("Message: " + request.getMessage());
-
-        if (actionListener != null) {
-            // Show Accept/Reject buttons
-            holder.acceptButton.setVisibility(View.VISIBLE);
-            holder.rejectButton.setVisibility(View.VISIBLE);
-
-            holder.acceptButton.setOnClickListener(v -> actionListener.onAccept(request.getRequestId()));
-            holder.rejectButton.setOnClickListener(v -> actionListener.onReject(request.getRequestId()));
-
-        } else if (clickListener != null) {
-            // Hide Accept/Reject and set click for whole item
-            holder.acceptButton.setVisibility(View.GONE);
-            holder.rejectButton.setVisibility(View.GONE);
-
-            holder.itemView.setOnClickListener(v -> clickListener.onClick(request));
-        }
+    public void onBindViewHolder(RequestViewHolder holder, int position) {
+        ChatRequest request = requestList.get(position);
+        holder.bind(request);
     }
 
     @Override
     public int getItemCount() {
-        return chatRequests.size();
+        return requestList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView requesterName, bookTitle, message;
+    class RequestViewHolder extends RecyclerView.ViewHolder {
+
+        TextView requesterNameText, bookTitleText, messageText;
         Button acceptButton, rejectButton;
 
-        public ViewHolder(View itemView) {
+        public RequestViewHolder(View itemView) {
             super(itemView);
-            requesterName = itemView.findViewById(R.id.requesterName);
-            bookTitle = itemView.findViewById(R.id.requestBookTitle);
-            message = itemView.findViewById(R.id.requestMessage);
+            requesterNameText = itemView.findViewById(R.id.requesterName);
+            bookTitleText = itemView.findViewById(R.id.requestBookTitle);
+            messageText = itemView.findViewById(R.id.requestMessage);
             acceptButton = itemView.findViewById(R.id.acceptChatButton);
             rejectButton = itemView.findViewById(R.id.rejectChatButton);
+        }
+
+
+        public void bind(ChatRequest request) {
+            requesterNameText.setText("From: " + request.getRequesterName());
+            bookTitleText.setText("Book: " + request.getBookTitle());
+            messageText.setText("Message: " + request.getMessage());
+
+            if (showActions) {
+                acceptButton.setVisibility(View.VISIBLE);
+                rejectButton.setVisibility(View.VISIBLE);
+
+                acceptButton.setOnClickListener(v -> listener.onAccept(request.getRequestId()));
+                rejectButton.setOnClickListener(v -> listener.onReject(request.getRequestId()));
+            } else {
+                acceptButton.setVisibility(View.GONE);
+                rejectButton.setVisibility(View.GONE);
+
+                // ➡️ ADD THIS: open chat when item is clicked
+                itemView.setOnClickListener(v -> {
+                    if (clickListener != null) {
+                        clickListener.onClick(request);
+                    }
+                });
+            }
         }
     }
 }

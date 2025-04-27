@@ -1,8 +1,10 @@
 package com.example.bookrate.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,6 +69,12 @@ public class ReaderActivity extends AppCompatActivity {
             }
 
             bookAdapter.notifyDataSetChanged();
+        });
+
+        ImageButton openUserChatsButton = findViewById(R.id.openUserChatsButton);
+        openUserChatsButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ReaderActivity.this, UserAcceptedChatsActivity.class);
+            startActivity(intent);
         });
     }
 
