@@ -31,6 +31,7 @@ public class ChatMessageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         if (message.getSenderName() != null && message.getSenderName().equals(currentUserName)) {
             return VIEW_TYPE_SENT;
         } else {
+
             return VIEW_TYPE_RECEIVED;
         }
     }

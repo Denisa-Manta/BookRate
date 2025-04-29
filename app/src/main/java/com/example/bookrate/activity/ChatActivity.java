@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bookrate.R;
 import com.example.bookrate.adapter.ChatMessageAdapter;
 import com.example.bookrate.model.ChatMessage;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -25,9 +26,9 @@ public class ChatActivity extends AppCompatActivity {
 
     private final List<ChatMessage> messages = new ArrayList<>();
 
-    private String senderName;
     private String requesterName;
     private String requestId;
+    private String authorName;
 
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/"
@@ -42,17 +43,19 @@ public class ChatActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.chatMessageInput);
         sendChatMessageButton = findViewById(R.id.sendChatMessageButton);
 
-        senderName = getIntent().getStringExtra("authorName");
+        authorName = getIntent().getStringExtra("authorName");
         requesterName = getIntent().getStringExtra("requesterName");
         requestId = getIntent().getStringExtra("requestId");
 
-        if (senderName == null || requesterName == null || requestId == null) {
+        if (authorName == null || requesterName == null || requestId == null) {
             Toast.makeText(this, "Missing chat info", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
-        adapter = new ChatMessageAdapter(messages, senderName);
+        String currentUserEmail = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        adapter = new ChatMessageAdapter(messages, currentUserEmail);
+
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.setAdapter(adapter);
 
@@ -97,7 +100,7 @@ public class ChatActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        messages.clear();
+                        messages.subList(1, messages.size()).clear();
                         for (DataSnapshot msgSnap : snapshot.getChildren()) {
                             ChatMessage msg = msgSnap.getValue(ChatMessage.class);
                             if (msg != null) {
@@ -123,7 +126,14 @@ public class ChatActivity extends AppCompatActivity {
         String messageId = dbRef.child("messages").child(requestId).child("thread").push().getKey();
         if (messageId == null) return;
 
-        ChatMessage message = new ChatMessage(senderName, requesterName, content, System.currentTimeMillis());
+        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        ChatMessage message = new ChatMessage(
+                currentUserEmail,
+                currentUserEmail.equals(requesterName) ? authorName : requesterName,  // 🔁 actual receiver
+                content,
+                System.currentTimeMillis()
+        );
 
         dbRef.child("messages").child(requestId).child("thread").child(messageId)
                 .setValue(message)
@@ -132,4 +142,5 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
                 );
     }
+
 }
