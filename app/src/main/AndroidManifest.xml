@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BOOKRATE">
         <activity
+            android:name=".activity.UserProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.UserAcceptedChatsActivity"
             android:exported="false" />
         <activity
@@ -67,5 +70,7 @@
             </intent-filter>
         </activity>
     </application>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
 </manifest>

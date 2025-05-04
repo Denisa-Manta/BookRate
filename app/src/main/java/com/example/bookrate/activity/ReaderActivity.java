@@ -2,6 +2,7 @@ package com.example.bookrate.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -76,6 +77,13 @@ public class ReaderActivity extends AppCompatActivity {
             Intent intent = new Intent(ReaderActivity.this, UserAcceptedChatsActivity.class);
             startActivity(intent);
         });
+
+        ImageButton userProfileButton = findViewById(R.id.userProfileButton);
+        userProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(ReaderActivity.this, UserProfileActivity.class);
+            startActivity(intent);
+        });
+
     }
 
     // 🔁 Refresh list when returning from detail activity
@@ -97,6 +105,7 @@ public class ReaderActivity extends AppCompatActivity {
 
                         for (DataSnapshot snap : booksSnapshot.getChildren()) {
                             Book book = snap.getValue(Book.class);
+                            Log.d("DEBUG_BOOKS_READER", "Entry book db: " + book.getTitle());
                             if (book != null) {
                                 book.setId(snap.getKey());
 
