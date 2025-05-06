@@ -37,8 +37,9 @@ public class UserProfileActivity extends AppCompatActivity {
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("users").child(userId);
 
-    private final StorageReference storageRef = FirebaseStorage.getInstance()
-            .getReference("profile_images").child(userId + ".jpg");
+    private final StorageReference storageRef = FirebaseStorage.getInstance("gs://bookrate-4dc23.firebasestorage.app")
+            .getReference("profile_images")
+            .child(userId + ".jpg");
 
     private final DatabaseReference booksRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")

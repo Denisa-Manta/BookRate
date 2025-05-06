@@ -56,6 +56,13 @@ public class AuthorActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        ImageButton authorProfileButton = findViewById(R.id.authorProfileButton);
+        authorProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AuthorActivity.this, AuthorProfileActivity.class);
+            startActivity(intent);
+        });
+
+
         loadBooks();
     }
 

@@ -1,28 +1,37 @@
 package com.example.bookrate.activity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.bookrate.R;
 import com.example.bookrate.model.Book;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
+import com.google.firebase.storage.*;
+
+import java.util.UUID;
 
 public class AddBookActivity extends AppCompatActivity {
 
     private EditText titleEditText, authorEditText, genreEditText;
-    private Button uploadButton;
+    private Button uploadButton, selectImageButton;
+    private ImageView previewImageView;
 
     private final FirebaseDatabase database = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/");
     private final DatabaseReference booksRef = database.getReference("books");
+    private final FirebaseStorage storage = FirebaseStorage.getInstance("gs://bookrate-4dc23.firebasestorage.app");
 
     private FirebaseAuth mAuth;
+    private Uri selectedImageUri;
+
+    private static final int IMAGE_PICK_CODE = 3001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +42,29 @@ public class AddBookActivity extends AppCompatActivity {
         authorEditText = findViewById(R.id.authorEditText);
         genreEditText = findViewById(R.id.genreEditText);
         uploadButton = findViewById(R.id.uploadButton);
+        selectImageButton = findViewById(R.id.chooseImageButton);
+        previewImageView = findViewById(R.id.bookImageView);
 
         mAuth = FirebaseAuth.getInstance();
 
+        selectImageButton.setOnClickListener(v -> openGallery());
         uploadButton.setOnClickListener(v -> uploadBook());
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_PICK_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_PICK_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+            Glide.with(this).load(selectedImageUri).into(previewImageView);
+        }
     }
 
     private void uploadBook() {
@@ -57,8 +85,22 @@ public class AddBookActivity extends AppCompatActivity {
 
         String authorId = currentUser.getUid();
 
-        Book book = new Book(title, author, genre, null, authorId); // updated constructor
+        if (selectedImageUri != null) {
+            String imageName = UUID.randomUUID().toString() + ".jpg";
+            StorageReference imageRef = storage.getReference("book_images").child(imageName);
 
+            imageRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        saveBookToDatabase(title, author, genre, uri.toString(), authorId);
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
+        } else {
+            saveBookToDatabase(title, author, genre, null, authorId);
+        }
+    }
+
+    private void saveBookToDatabase(String title, String author, String genre, String imageUrl, String authorId) {
+        Book book = new Book(title, author, genre, imageUrl, authorId);
         booksRef.push().setValue(book).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Toast.makeText(this, "Book uploaded successfully!", Toast.LENGTH_SHORT).show();
