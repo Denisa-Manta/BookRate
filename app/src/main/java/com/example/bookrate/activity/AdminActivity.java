@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.bookrate.R;
+import android.content.Intent;
 
 public class AdminActivity extends AppCompatActivity {
 
@@ -29,5 +30,12 @@ public class AdminActivity extends AppCompatActivity {
         viewAuthorsButton.setOnClickListener(v -> {
             startActivity(new Intent(AdminActivity.this, PendingAuthorsActivity.class));
         });
+
+        Button viewAllBooksButton = findViewById(R.id.viewAllBooksButton);
+        viewAllBooksButton.setOnClickListener(v -> {
+            Intent intent = new Intent(AdminActivity.this, AdminBookActivity.class);
+            startActivity(intent);
+        });
+
     }
 }
