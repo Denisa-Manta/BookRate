@@ -43,11 +43,11 @@
             android:layout_height="wrap_content"
             android:hint="Author" />
 
-        <EditText
-            android:id="@+id/genreEditText"
+        <Spinner
+            android:id="@+id/genreSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Genre" />
+            android:layout_marginTop="8dp" />
 
         <!-- Upload Book Button -->
         <Button

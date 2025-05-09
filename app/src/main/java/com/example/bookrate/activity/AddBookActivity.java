@@ -20,7 +20,8 @@ import java.util.UUID;
 
 public class AddBookActivity extends AppCompatActivity {
 
-    private EditText titleEditText, authorEditText, genreEditText;
+    private EditText titleEditText, authorEditText;
+    private Spinner genreSpinner;
     private Button uploadButton, selectImageButton;
     private ImageView previewImageView;
 
@@ -40,10 +41,19 @@ public class AddBookActivity extends AppCompatActivity {
 
         titleEditText = findViewById(R.id.titleEditText);
         authorEditText = findViewById(R.id.authorEditText);
-        genreEditText = findViewById(R.id.genreEditText);
         uploadButton = findViewById(R.id.uploadButton);
         selectImageButton = findViewById(R.id.chooseImageButton);
         previewImageView = findViewById(R.id.bookImageView);
+
+        genreSpinner = findViewById(R.id.genreSpinner);
+        String[] genres = {
+                "Drama", "Comedy", "Children", "Romance", "Adventure",
+                "Fantasy", "Thriller", "Science Fiction", "Horror", "Personal Development"
+        };
+
+        ArrayAdapter<String> genreAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, genres);
+        genreAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        genreSpinner.setAdapter(genreAdapter);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -70,7 +80,7 @@ public class AddBookActivity extends AppCompatActivity {
     private void uploadBook() {
         String title = titleEditText.getText().toString().trim();
         String author = authorEditText.getText().toString().trim();
-        String genre = genreEditText.getText().toString().trim();
+        String genre = genreSpinner.getSelectedItem().toString();
 
         if (title.isEmpty() || author.isEmpty() || genre.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
