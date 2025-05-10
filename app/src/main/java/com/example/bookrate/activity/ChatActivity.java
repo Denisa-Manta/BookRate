@@ -1,6 +1,7 @@
 package com.example.bookrate.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.*;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +81,8 @@ public class ChatActivity extends AppCompatActivity {
                             ChatMessage first = new ChatMessage(
                                     user, author, text, System.currentTimeMillis()
                             );
+
+                            Log.d("message_debug_load:", author);
                             messages.add(first);
                             adapter.notifyDataSetChanged();
                         }
@@ -123,6 +126,52 @@ public class ChatActivity extends AppCompatActivity {
         String content = messageInput.getText().toString().trim();
         if (content.isEmpty()) return;
 
+        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+        // If current user is the requester, we must find author's email
+        if (currentUserEmail.equals(requesterName)) {
+            // 🔍 Lookup author's email
+            Log.d("message_log:", authorName);
+            DatabaseReference usersRef = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    String authorEmail = null;
+
+                    for (DataSnapshot userSnap : snapshot.getChildren()) {
+                        String name = userSnap.child("name").getValue(String.class);
+                        String email = userSnap.child("email").getValue(String.class);
+                        Log.d("message_log:", name);
+                        Log.d("message_log:", email);
+                        Log.d("message_log:", "next_user");
+
+                        if (name != null && name.equals(authorName)) {
+                            authorEmail = email;
+                            Log.d("message_log:", "authorEmail");
+                            break;
+                        }
+                    }
+
+                    if (authorEmail != null) {
+                        sendChatMessageTo(content, authorEmail);
+                    } else {
+                        Toast.makeText(ChatActivity.this, "Could not find email for " + authorName, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Toast.makeText(ChatActivity.this, "Failed to fetch author email", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } else {
+            sendChatMessageTo(content, requesterName);
+            Log.d("message_log:", "else if");
+        }
+    }
+
+    private void sendChatMessageTo(String content, String receiverEmail) {
         String messageId = dbRef.child("messages").child(requestId).child("thread").push().getKey();
         if (messageId == null) return;
 
@@ -130,10 +179,12 @@ public class ChatActivity extends AppCompatActivity {
 
         ChatMessage message = new ChatMessage(
                 currentUserEmail,
-                currentUserEmail.equals(requesterName) ? authorName : requesterName,  // 🔁 actual receiver
+                receiverEmail,
                 content,
                 System.currentTimeMillis()
         );
+
+        Log.d("message_debug_send", "Receiver email: " + receiverEmail);
 
         dbRef.child("messages").child(requestId).child("thread").child(messageId)
                 .setValue(message)
@@ -142,5 +193,6 @@ public class ChatActivity extends AppCompatActivity {
                         Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
                 );
     }
+
 
 }
