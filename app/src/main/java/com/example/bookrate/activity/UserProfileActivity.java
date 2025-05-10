@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bookrate.R;
 import com.example.bookrate.adapter.CurrentlyReadingAdapter;
+import com.example.bookrate.adapter.RecommendationAdapter;
 import com.example.bookrate.model.Book;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
@@ -21,7 +22,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Collections;
+import java.util.Comparator;
+
 
 public class UserProfileActivity extends AppCompatActivity {
 
@@ -31,6 +39,10 @@ public class UserProfileActivity extends AppCompatActivity {
     private RecyclerView currentlyReadingRecyclerView;
     private CurrentlyReadingAdapter currentlyReadingAdapter;
     private final List<Book> currentlyReadingBooks = new ArrayList<>();
+    private RecyclerView recommendationsRecyclerView;
+    private RecommendationAdapter recommendationsAdapter;
+    private final List<Book> recommendedBooks = new ArrayList<>();
+
 
     private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
@@ -54,10 +66,15 @@ public class UserProfileActivity extends AppCompatActivity {
 
         currentlyReadingRecyclerView = findViewById(R.id.currentlyReadingRecyclerView);
         currentlyReadingAdapter = new CurrentlyReadingAdapter(this, currentlyReadingBooks);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         currentlyReadingRecyclerView.setLayoutManager(layoutManager);
         currentlyReadingRecyclerView.setAdapter(currentlyReadingAdapter);
+
+        recommendationsRecyclerView = findViewById(R.id.recommendationsRecyclerView);
+        recommendationsAdapter = new RecommendationAdapter(this, recommendedBooks);
+        LinearLayoutManager recLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recommendationsRecyclerView.setLayoutManager(recLayoutManager);
+        recommendationsRecyclerView.setAdapter(recommendationsAdapter);
 
         userNameTextView = findViewById(R.id.userNameTextView);
         booksReadTextView = findViewById(R.id.booksReadTextView);
@@ -120,6 +137,120 @@ public class UserProfileActivity extends AppCompatActivity {
                             @Override
                             public void onCancelled(DatabaseError error) {}
                         });
+
+                // Fetch all books & calculate recommendations
+                booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot booksSnapshot) {
+                        HashMap<String, Integer> genreStarCount = new HashMap<>();
+                        HashMap<String, String> userStates = new HashMap<>();
+                        HashMap<String, Integer> userRatings = new HashMap<>();
+                        List<Book> allBooks = new ArrayList<>();
+
+                        // Load user states and ratings
+                        DataSnapshot bookStates = snapshot.child("bookStates");
+                        for (DataSnapshot bookSnap : bookStates.getChildren()) {
+                            String state = bookSnap.child("state").getValue(String.class);
+                            Long rating = bookSnap.child("rating").getValue(Long.class);
+                            Log.d("STATE_BOOK_GENRE_ID:", bookSnap.getKey());
+                            Log.d("STATE_BOOK_GENRE_RATING:", String.valueOf(rating));
+                            Log.d("STATE_BOOK_GENRE_STATE:", state);
+                            Log.d("STATE_BOOK_GENRE", "NEXT_BOOK");
+                            if (state != null) userStates.put(bookSnap.getKey(), state);
+                            if (rating != null) userRatings.put(bookSnap.getKey(), rating.intValue());
+                        }
+
+                        // Process books and compute genre totals
+                        for (DataSnapshot snap : booksSnapshot.getChildren()) {
+                            Book book = snap.getValue(Book.class);
+                            if (book != null) {
+                                String id = snap.getKey();
+                                book.setId(id);
+                                allBooks.add(book);
+
+                                if (userStates.containsKey(id) && "Read".equalsIgnoreCase(userStates.get(id))) {
+                                    int rating = userRatings.containsKey(id) ? userRatings.get(id) : 0;
+                                    String genre = book.getGenre();
+                                    Log.d("STATE_BOOK_GENRE_IF_RATING:", String.valueOf(rating));
+                                    Log.d("STATE_BOOK_GENRE_IF_GENRE", genre);
+
+                                    int currentTotal = genreStarCount.containsKey(genre) ? genreStarCount.get(genre) : 0;
+                                    Log.d("STATE_BOOK_GENRE_IF_GENRE_CURRENT_TOTAL:", String.valueOf(currentTotal));
+
+                                    genreStarCount.put(genre, currentTotal + rating);
+                                    Log.d("STATE_BOOK_GENRE_IF", "NEXT IT");
+
+                                }
+                            }
+                        }
+
+                        for (HashMap.Entry<String, Integer> entry : genreStarCount.entrySet()) {
+                            Log.d("STATE_BOOK_GENRE_HASH", "Key: " + entry.getKey() + ", Value: " + entry.getValue());
+                        }
+
+
+                        // Sort genres by rating sum
+                        List<String> topGenres = new ArrayList<>(genreStarCount.keySet());
+                        Collections.sort(topGenres, new Comparator<String>() {
+                            @Override
+                            public int compare(String g1, String g2) {
+                                return genreStarCount.get(g2) - genreStarCount.get(g1);
+                            }
+                        });
+
+                        for (String item : topGenres) {
+                            Log.d("STATE_BOOK_GENRE_TOP:", item);
+                        }
+
+
+                        // Recommend up to 3 books in top genres in "Want to Read"
+                        Set<String> usedGenres = new HashSet<>();
+                        for (String genre : topGenres) {
+                            for (Book book : allBooks) {
+                                if (genre.equals(book.getGenre()) &&
+                                        "Want to Read".equalsIgnoreCase(userStates.get(book.getId())) &&
+                                        !usedGenres.contains(genre)) {
+                                    Log.d("STATE_BOOK_GENRE_USED:", book.getId());
+                                    recommendedBooks.add(book);
+                                    usedGenres.add(genre);
+                                    break;
+                                }
+                            }
+                            if (recommendedBooks.size() >= 3) break;
+                        }
+
+                        // Fallback: recommend top 3 highest average-rated books (unique genres)
+                        if (recommendedBooks.isEmpty()) {
+                            // You must implement getAverageRating() or skip this
+                            Collections.sort(allBooks, new Comparator<Book>() {
+                                @Override
+                                public int compare(Book b1, Book b2) {
+                                    return Float.compare(b2.getAverageRating(), b1.getAverageRating());  // descending
+                                }
+                            });
+
+                            Set<String> seenGenres = new HashSet<>();
+                            for (Book book : allBooks) {
+                                String genre = book.getGenre();
+                                if (!seenGenres.contains(genre)) {
+                                    recommendedBooks.add(book);
+                                    seenGenres.add(genre);
+                                }
+                                if (recommendedBooks.size() >= 3) break;
+                            }
+                        }
+
+                        for(Book book : recommendedBooks){
+                            Log.d("STATE_BOOK_GENRE_RECOMMENDED:", book.getTitle());
+                        }
+
+                        recommendationsAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {}
+                });
+
 
             }
 

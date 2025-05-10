@@ -9,6 +9,7 @@ public class Book implements Serializable {
     private String genre;
     private String imageUrl;
     private String authorId;
+    private float averageRating;
 
     // These fields are user-specific and will be saved under users/<uid>/bookStates/<bookId>
     private String state;      // "Want to Read", "Currently Reading", "Read"
@@ -95,4 +96,13 @@ public class Book implements Serializable {
     public void setAuthorId(String authorId) {
         this.authorId = authorId;
     }
+
+    public float getAverageRating() {
+        return averageRating;
+    }
+    public void setAverageRating(float averageRating) {
+        this.averageRating = averageRating;
+    }
+
+
 }
