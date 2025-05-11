@@ -13,6 +13,7 @@ import com.example.bookrate.adapter.ChatMessageAdapter;
 import com.example.bookrate.model.ChatMessage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,8 @@ public class ChatActivity extends AppCompatActivity {
         }
 
         String currentUserEmail = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        adapter = new ChatMessageAdapter(messages, currentUserEmail);
 
+        adapter = new ChatMessageAdapter(messages, currentUserEmail);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.setAdapter(adapter);
 
@@ -66,7 +67,6 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void loadMessages() {
-        // ✅ Step 1: Load the initial message (first message written by user)
         dbRef.child("messages").child(requestId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -81,13 +81,12 @@ public class ChatActivity extends AppCompatActivity {
                             ChatMessage first = new ChatMessage(
                                     user, author, text, System.currentTimeMillis()
                             );
-
+                            // No read field in initial message
                             Log.d("message_debug_load:", author);
                             messages.add(first);
                             adapter.notifyDataSetChanged();
                         }
 
-                        // ✅ Step 2: Start listening for conversation under /thread
                         listenToThread();
                     }
 
@@ -99,17 +98,41 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void listenToThread() {
+
         dbRef.child("messages").child(requestId).child("thread")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+                        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
                         messages.subList(1, messages.size()).clear();
+
                         for (DataSnapshot msgSnap : snapshot.getChildren()) {
                             ChatMessage msg = msgSnap.getValue(ChatMessage.class);
                             if (msg != null) {
                                 messages.add(msg);
+
+                                Log.d("message_debug_thread", "---------new thread--------");
+                                Log.d("message_debug_thread", "Message: " + msg.getMessage());
+                                Log.d("message_debug_thread_sender", "Sender: " + msg.getSenderName());
+                                Log.d("message_debug_thread_receiver", "Receiver: " + msg.getReceiverName());
+                                Log.d("message_debug_thread_read_flag", "Read: " + msg.isRead());
+                                Log.d("message_debug_thread_current_user", "Current User: " + currentUserEmail);
+
+                                // ✅ Only the actual receiver should mark it as read
+                                if (!msg.isRead()
+                                        && msg.getReceiverName() != null
+                                        && msg.getReceiverName().equals(currentUserEmail)
+                                        && !msg.getSenderName().equals(currentUserEmail)) {
+
+                                    msgSnap.getRef().child("read").setValue(true);
+                                    Log.d("message_debug_thread", "✅ Marked as read by receiver: " + currentUserEmail);
+                                }
+
+                                Log.d("message_debug_thread", "---------end thread--------");
                             }
                         }
+
                         adapter.notifyDataSetChanged();
                         chatRecyclerView.scrollToPosition(messages.size() - 1);
                     }
@@ -128,11 +151,12 @@ public class ChatActivity extends AppCompatActivity {
 
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-        // If current user is the requester, we must find author's email
         if (currentUserEmail.equals(requesterName)) {
-            // 🔍 Lookup author's email
             Log.d("message_log:", authorName);
-            DatabaseReference usersRef = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
+            DatabaseReference usersRef = FirebaseDatabase.getInstance(
+                    "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("users");
+
             usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot snapshot) {
@@ -141,6 +165,7 @@ public class ChatActivity extends AppCompatActivity {
                     for (DataSnapshot userSnap : snapshot.getChildren()) {
                         String name = userSnap.child("name").getValue(String.class);
                         String email = userSnap.child("email").getValue(String.class);
+
                         Log.d("message_log:", name);
                         Log.d("message_log:", email);
                         Log.d("message_log:", "next_user");
@@ -166,7 +191,7 @@ public class ChatActivity extends AppCompatActivity {
             });
 
         } else {
-            sendChatMessageTo(content, requesterName);
+            sendChatMessageTo(content, requesterName); // requesterName must be email
             Log.d("message_log:", "else if");
         }
     }
@@ -177,22 +202,28 @@ public class ChatActivity extends AppCompatActivity {
 
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-        ChatMessage message = new ChatMessage(
-                currentUserEmail,
-                receiverEmail,
-                content,
-                System.currentTimeMillis()
-        );
+            ChatMessage message = new ChatMessage(
+                    currentUserEmail,
+                    receiverEmail,
+                    content,
+                    System.currentTimeMillis()
+            );
 
-        Log.d("message_debug_send", "Receiver email: " + receiverEmail);
+            Log.d("message_debug_content:", content);
+            message.setRead(false);
+            Log.d("message_debug_content:", "I set the message to false");
+
+            Log.d("message_debug_send:", "Receiver email: " + receiverEmail);
+
+            Log.d("message_debug_send:", "Sending message: " + new Gson().toJson(message));
+
 
         dbRef.child("messages").child(requestId).child("thread").child(messageId)
-                .setValue(message)
-                .addOnSuccessListener(aVoid -> messageInput.setText(""))
-                .addOnFailureListener(e ->
-                        Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
-                );
+                    .setValue(message)
+                    .addOnSuccessListener(aVoid -> messageInput.setText(""))
+                    .addOnFailureListener(e ->
+                            Toast.makeText(ChatActivity.this, "Failed to send message", Toast.LENGTH_SHORT).show()
+                    );
     }
-
 
 }

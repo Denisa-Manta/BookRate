@@ -12,6 +12,10 @@ import com.example.bookrate.R;
 import com.example.bookrate.model.ChatRequest;
 import com.example.bookrate.util.ChatClickListener;
 import com.example.bookrate.util.OnChatRequestActionListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -63,9 +67,47 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
 
 
         public void bind(ChatRequest request) {
-            requesterNameText.setText("From: " + request.getRequesterName());
-            bookTitleText.setText("Book: " + request.getBookTitle());
-            messageText.setText("Message: " + request.getMessage());
+            String currentUserEmail = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
+            DatabaseReference usersRef = com.google.firebase.database.FirebaseDatabase.getInstance(
+                    "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("users");
+
+            usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    String authorEmail = null;
+                    for (DataSnapshot userSnap : snapshot.getChildren()) {
+                        String name = userSnap.child("name").getValue(String.class);
+                        String email = userSnap.child("email").getValue(String.class);
+
+                        if (name != null && name.equals(request.getAuthorName())) {
+                            authorEmail = email;
+                            break;
+                        }
+                    }
+
+                    String fromText;
+                    if (currentUserEmail.equals(request.getRequesterName())) {
+                        // User is logged in → show author
+                        fromText = "From: " + request.getAuthorName();
+                    } else if (authorEmail != null && currentUserEmail.equals(authorEmail)) {
+                        // Author is logged in → show requester
+                        fromText = "From: " + request.getRequesterName();
+                    } else {
+                        fromText = "From: Unknown";
+                    }
+
+                    requesterNameText.setText(fromText);
+                    bookTitleText.setText("Book: " + request.getBookTitle());
+                    messageText.setText("Message: " + request.getMessage());
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    requesterNameText.setText("From: Error");
+                }
+            });
 
             if (showActions) {
                 acceptButton.setVisibility(View.VISIBLE);
@@ -77,7 +119,6 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
                 acceptButton.setVisibility(View.GONE);
                 rejectButton.setVisibility(View.GONE);
 
-                // ➡️ ADD THIS: open chat when item is clicked
                 itemView.setOnClickListener(v -> {
                     if (clickListener != null) {
                         clickListener.onClick(request);
@@ -85,5 +126,6 @@ public class ChatRequestAdapter extends RecyclerView.Adapter<ChatRequestAdapter.
                 });
             }
         }
+
     }
 }

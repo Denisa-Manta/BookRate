@@ -51,17 +51,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <ImageButton
-        android:id="@+id/openUserChatsButton"
+    <FrameLayout
+        android:id="@+id/chatButtonContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:src="@android:drawable/ic_menu_send"
-        android:contentDescription="Open Active Chats"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/userProfileButton"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp" />
+        android:layout_marginEnd="8dp">
+
+        <ImageButton
+            android:id="@+id/openUserChatsButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:src="@android:drawable/ic_menu_send"
+            android:contentDescription="Open Active Chats" />
+
+        <TextView
+            android:id="@+id/chatBadgeTextView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="top|end"
+            android:gravity="center"
+            android:background="@drawable/badge_background"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:text="0"
+            android:visibility="visible"/>
+    </FrameLayout>
 
     <ImageButton
         android:id="@+id/userProfileButton"

@@ -6,6 +6,7 @@ public class ChatMessage {
     private String receiverName;
     private String message;
     private long timestamp;
+    private boolean read = false;  // ✅ Add this field
 
     // Required empty constructor for Firebase
     public ChatMessage() {}
@@ -15,6 +16,7 @@ public class ChatMessage {
         this.receiverName = receiverName;
         this.message = message;
         this.timestamp = timestamp;
+        this.read = false;  // ✅ Default to false
     }
 
     // 🔹 Getters
@@ -34,6 +36,10 @@ public class ChatMessage {
         return timestamp;
     }
 
+    public boolean isRead() {
+        return read;
+    }
+
     // 🔸 Setters
     public void setSenderName(String senderName) {
         this.senderName = senderName;
@@ -49,5 +55,9 @@ public class ChatMessage {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void setRead(boolean read) {
+        this.read = read;
     }
 }

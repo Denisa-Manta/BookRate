@@ -2,6 +2,8 @@ package com.example.bookrate.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +25,7 @@ public class AuthorActivity extends AppCompatActivity {
     private RecyclerView authorBooksRecyclerView;
     private AuthorBookAdapter bookAdapter;
     private ArrayList<Book> bookList;
+    private TextView chatBadgeTextView;
 
     private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
@@ -62,6 +65,8 @@ public class AuthorActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        chatBadgeTextView = findViewById(R.id.chatBadgeTextView);
+        listenForUnreadMessages();
 
         loadBooks();
     }
@@ -105,4 +110,55 @@ public class AuthorActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void listenForUnreadMessages() {
+        DatabaseReference messagesRef = dbRef.child("messages");
+
+        messagesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail()
+                        : null;
+
+                if (currentUserEmail == null) {
+                    chatBadgeTextView.setVisibility(View.GONE);
+                    return;
+                }
+
+                int unreadCount = 0;
+
+                for (DataSnapshot threadSnap : snapshot.getChildren()) {
+                    DataSnapshot thread = threadSnap.child("thread");
+                    for (DataSnapshot msgSnap : thread.getChildren()) {
+                        String receiver = msgSnap.child("receiverName").getValue(String.class);
+                        Boolean read = msgSnap.child("read").getValue(Boolean.class);
+
+                        if (receiver != null && receiver.equals(currentUserEmail)
+                                && (read == null || !read)) {
+                            unreadCount++;
+                            Log.d("badge_count_increment_author: ", String.valueOf(unreadCount));
+                        }
+                    }
+                }
+
+                if (unreadCount > 0) {
+                    chatBadgeTextView.setText(String.valueOf(unreadCount));
+                    chatBadgeTextView.setVisibility(View.VISIBLE);
+                    Log.d("badge_count_view_author: ", String.valueOf(unreadCount));
+                } else {
+                    chatBadgeTextView.setVisibility(View.GONE);
+                    Log.d("badge_count_gone_author: ", String.valueOf(unreadCount));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                chatBadgeTextView.setVisibility(View.GONE);
+            }
+        });
+    }
+
+
+
 }

@@ -3,9 +3,11 @@ package com.example.bookrate.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,10 +30,15 @@ public class ReaderActivity extends AppCompatActivity {
     private BookAdapter bookAdapter;
     private List<Book> bookList = new ArrayList<>();
     private List<Book> fullBookList = new ArrayList<>(); // for search reset
+    private TextView chatBadgeTextView;
 
     private final DatabaseReference booksRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("books");
+
+    private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
+            "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference();
 
     private final String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
     private final DatabaseReference userBookStatesRef = FirebaseDatabase.getInstance(
@@ -51,6 +58,8 @@ public class ReaderActivity extends AppCompatActivity {
 
         bookAdapter = new BookAdapter(bookList, userBookStatesRef);
         recyclerView.setAdapter(bookAdapter);
+
+        chatBadgeTextView = findViewById(R.id.chatBadgeTextView);
 
         fetchBooksAndUserStates();
 
@@ -83,6 +92,8 @@ public class ReaderActivity extends AppCompatActivity {
             Intent intent = new Intent(ReaderActivity.this, UserProfileActivity.class);
             startActivity(intent);
         });
+
+        listenForUnreadMessages();
 
     }
 
@@ -139,4 +150,55 @@ public class ReaderActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError error) {}
         });
     }
+
+    private void listenForUnreadMessages() {
+        DatabaseReference messagesRef = dbRef.child("messages");
+
+        messagesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail()
+                        : null;
+
+                if (currentUserEmail == null) {
+                    chatBadgeTextView.setVisibility(View.GONE);
+                    return;
+                }
+
+                int unreadCount = 0;
+
+                for (DataSnapshot threadSnap : snapshot.getChildren()) {
+                    DataSnapshot thread = threadSnap.child("thread");
+                    for (DataSnapshot msgSnap : thread.getChildren()) {
+                        String receiver = msgSnap.child("receiverName").getValue(String.class);
+                        Boolean read = msgSnap.child("read").getValue(Boolean.class);
+                        String message = msgSnap.child("message").getValue(String.class);
+
+                        if (receiver != null && receiver.equals(currentUserEmail)
+                                && (read == null || !read)) {
+                            unreadCount++;
+                            Log.d("badge_count_increment_reader: ", String.valueOf(unreadCount));
+                            Log.d("badge_count_increment_reader_message: ", message);
+                        }
+                    }
+                }
+
+                if (unreadCount > 0) {
+                    chatBadgeTextView.setText(String.valueOf(unreadCount));
+                    chatBadgeTextView.setVisibility(View.VISIBLE);
+                    Log.d("badge_count_view_reader: ", String.valueOf(unreadCount));
+                } else {
+                    chatBadgeTextView.setVisibility(View.GONE);
+                    Log.d("badge_count_gone_reader: ", String.valueOf(unreadCount));
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                chatBadgeTextView.setVisibility(View.GONE);
+            }
+        });
+    }
+
 }
