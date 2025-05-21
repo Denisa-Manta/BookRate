@@ -4,46 +4,76 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".activity.AdminActivity">
 
-    <TextView
-        android:id="@+id/adminWelcomeText"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:text="Welcome, Admin!"
-        android:textSize="24sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:textStyle="bold"
+        android:layout_marginTop="62dp"
+        android:layout_marginBottom="16dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo"
+        android:contentDescription="BookRate logo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="64dp"/>
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/adminIllustration"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/admin"
+        android:contentDescription="Admin Illustration"
+        app:layout_constraintTop_toBottomOf="@id/logoImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/addBookButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Add Book"
-        app:layout_constraintTop_toBottomOf="@id/adminWelcomeText"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintTop_toBottomOf="@id/adminIllustration"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
-
-    <Button
-        android:id="@+id/viewAuthorsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="View Author Requests"
-        app:layout_constraintTop_toBottomOf="@id/addBookButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="24dp"/>
+        android:layout_marginTop="54dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
 
     <Button
         android:id="@+id/viewAllBooksButton"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="View All Books"
-        android:layout_marginTop="16dp" />
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintTop_toBottomOf="@id/addBookButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
+
+    <Button
+        android:id="@+id/viewAuthorsButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="View Author Requests"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintTop_toBottomOf="@id/viewAllBooksButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

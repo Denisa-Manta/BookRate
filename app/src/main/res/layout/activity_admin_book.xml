@@ -6,20 +6,24 @@
     android:padding="16dp"
     android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/adminBookTitle"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:text="All Books in the App"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="#4A148C"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo"
+        android:contentDescription="BookRate logo" />
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/adminBooksRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:scrollbars="vertical" />
 </LinearLayout>

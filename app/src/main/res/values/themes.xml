@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Tema aplicației BookRate -->
     <style name="Theme.BookRate" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
         <!-- Culori principale -->
         <item name="colorPrimary">@color/accentGreen</item>
         <item name="colorPrimaryVariant">@color/pastelGreen</item>
@@ -15,8 +15,6 @@
         <!-- Status bar (sus) -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/accentGreen</item>
 
-        <!-- Alte stiluri implicite (dacă le folosești) -->
-        <!-- <item name="android:windowBackground">@color/creamBackground</item> -->
     </style>
 
 </resources>

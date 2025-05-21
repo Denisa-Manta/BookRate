@@ -10,16 +10,12 @@ import android.content.Intent;
 
 public class AdminActivity extends AppCompatActivity {
 
-    private TextView adminWelcomeText;
     private Button addBookButton, viewAuthorsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin);
-
-        adminWelcomeText = findViewById(R.id.adminWelcomeText);
-        adminWelcomeText.setText("Welcome, Admin!");
 
         addBookButton = findViewById(R.id.addBookButton);
         addBookButton.setOnClickListener(v -> {
