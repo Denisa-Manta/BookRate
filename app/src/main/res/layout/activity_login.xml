@@ -4,44 +4,83 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/creamBackground"
     tools:context=".activity.LoginActivity">
 
     <!-- Email Field -->
-    <android.widget.EditText
-        android:id="@+id/emailEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:boxBackgroundMode="filled"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxBackgroundColor="@color/whiteBackground"
+        app:boxStrokeColor="@color/accentGreen"
+        app:startIconDrawable="@drawable/ic_baseline_email_24"
+        app:startIconTint="@color/accentGreen"
         app:layout_constraintTop_toTopOf="parent"
-        android:padding="16dp"
-        android:layout_marginTop="100dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:inputType="textEmailAddress" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Password Field -->
-    <android.widget.EditText
-        android:id="@+id/passwordEditText"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Password"
-        android:inputType="textPassword"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:boxBackgroundMode="filled"
+        app:boxCornerRadiusTopStart="12dp"
+        app:boxCornerRadiusTopEnd="12dp"
+        app:boxCornerRadiusBottomStart="12dp"
+        app:boxCornerRadiusBottomEnd="12dp"
+        app:boxBackgroundColor="@color/whiteBackground"
+        app:boxStrokeColor="@color/accentGreen"
+        app:startIconDrawable="@drawable/ic_baseline_lock_24"
+        app:startIconTint="@color/accentGreen"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/accentGreen"
+        app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailEditText"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- Login Button -->
-    <android.widget.Button
+    <Button
         android:id="@+id/loginButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Login"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="LOGIN"
+        android:textAllCaps="true"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        app:layout_constraintTop_toBottomOf="@id/passwordInputLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordEditText"
-        android:padding="16dp"
-        android:layout_marginTop="32dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

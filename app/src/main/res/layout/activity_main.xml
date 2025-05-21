@@ -1,47 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp"
-    android:background="#FAFAFA">
+    android:background="@color/creamBackground"
+    tools:context=".activity.MainActivity">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rate Your Book"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#333333"
-        android:layout_marginBottom="32dp" />
-
-    <Button
-        android:id="@+id/btnLogin"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Login"
-        android:backgroundTint="#6200EE"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp"/>
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/btnRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Register"
-        android:backgroundTint="#03DAC5"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="16dp"/>
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="32dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/new_logo_1"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:contentDescription="BookRate logo" />
 
-    <!-- Transparent clickable text -->
-    <TextView
-        android:id="@+id/tvAuthorSignup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#888888"
-        android:textSize="14sp"
-        android:layout_marginTop="12dp"
-        android:text=""/>
-</LinearLayout>
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:textColor="@color/buttonWhite"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/accentGreen"
+            android:background="@drawable/rounded_button" />
+
+        <Button
+            android:id="@+id/btnRegister"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register"
+            android:textColor="@color/textDark"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/pastelGreen"
+            android:background="@drawable/rounded_button" />
+
+        <TextView
+            android:id="@+id/tvAuthorSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/textDark"
+            android:textSize="14sp"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+</ScrollView>
+
