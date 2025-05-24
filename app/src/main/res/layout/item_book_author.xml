@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="12dp"
-    android:background="@android:color/white"
+    android:background="#FAFAFA"
     android:layout_marginBottom="8dp"
     android:elevation="2dp">
 
@@ -26,23 +26,23 @@
             android:id="@+id/bookTitle"
             android:text="Book Title"
             android:textStyle="bold"
-            android:textSize="16sp"
+            android:textSize="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/bookAuthor"
             android:text="Author Name"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/bookGenre"
-            android:text="Genre"
-            android:textSize="14sp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="Genre"
+            android:textSize="16sp" />
     </LinearLayout>
 
 </LinearLayout>

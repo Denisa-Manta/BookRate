@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:src="@drawable/logo"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:contentDescription="BookRate Logo" />
+
+    <ImageView
+        android:id="@+id/chatIllustration"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/review_page"
+        android:adjustViewBounds="true"
+        android:contentDescription="Chat Illustration" />
 
     <TextView
         android:id="@+id/reviewHeaderText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Write your review"
-        android:textSize="20sp"
+        android:text="Write your review:"
+        android:textSize="25sp"
+        android:textColor="@color/accentGreen"
         android:textStyle="bold"
         android:layout_marginBottom="12dp" />
 
@@ -28,9 +54,14 @@
 
     <Button
         android:id="@+id/postReviewButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Post Review"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp" />
+        android:text="POST REVIEW"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        android:layout_marginBottom="24dp" />
 </LinearLayout>
+</ScrollView>

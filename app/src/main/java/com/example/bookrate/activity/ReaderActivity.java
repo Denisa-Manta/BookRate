@@ -26,7 +26,7 @@ public class ReaderActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private EditText searchEditText;
-    private Button searchButton;
+    private ImageButton searchButton;
     private BookAdapter bookAdapter;
     private List<Book> bookList = new ArrayList<>();
     private List<Book> fullBookList = new ArrayList<>(); // for search reset

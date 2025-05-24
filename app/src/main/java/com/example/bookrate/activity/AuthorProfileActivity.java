@@ -26,8 +26,9 @@ import java.util.List;
 public class AuthorProfileActivity extends AppCompatActivity {
 
     private ImageView profileImageView;
+    private Button logoutButton1, createReaderAccount;
     private TextView authorNameTextView;
-    private RecyclerView booksWrittenRecyclerView;
+   // private RecyclerView booksWrittenRecyclerView;
     private CurrentlyReadingAdapter booksAdapter;
     private final List<Book> booksWritten = new ArrayList<>();
 
@@ -49,17 +50,33 @@ public class AuthorProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author_profile);
 
+        logoutButton1 = findViewById(R.id.logoutButton1);
+        createReaderAccount = findViewById(R.id.createReaderAccount);
         profileImageView = findViewById(R.id.authorProfileImageView);
         authorNameTextView = findViewById(R.id.authorNameTextView);
-        booksWrittenRecyclerView = findViewById(R.id.booksWrittenRecyclerView);
+      //  booksWrittenRecyclerView = findViewById(R.id.booksWrittenRecyclerView);
 
         booksAdapter = new CurrentlyReadingAdapter(this, booksWritten);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        booksWrittenRecyclerView.setLayoutManager(layoutManager);
-        booksWrittenRecyclerView.setAdapter(booksAdapter);
+       /* booksWrittenRecyclerView.setLayoutManager(layoutManager);
+        booksWrittenRecyclerView.setAdapter(booksAdapter);*/
 
         loadAuthorProfile();
         profileImageView.setOnClickListener(v -> pickImageFromGallery());
+
+        logoutButton1.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(AuthorProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+
+        createReaderAccount.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(AuthorProfileActivity.this, RegisterActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
     }
 
     private void loadAuthorProfile() {

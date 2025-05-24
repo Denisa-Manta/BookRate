@@ -3,6 +3,9 @@
     <color name="creamBackground">#FAF1E6</color>
     <color name="whiteBackground">#FDFAF6</color>
     <color name="pastelGreen">#E4EFE7</color>
+    <color name="lightGreen">#ECFAE5</color>
+    <color name="lightgreen">#F1FAF1</color>
+
 
     <!-- Accente și elemente UI -->
     <color name="accentGreen">#99BC85</color>

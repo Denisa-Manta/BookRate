@@ -34,6 +34,7 @@ import java.util.Comparator;
 public class UserProfileActivity extends AppCompatActivity {
 
     private ImageView profileImageView;
+    private ImageButton logoutButton;
     private TextView userNameTextView, booksReadTextView;
     private final int PICK_IMAGE_REQUEST = 1001;
     private RecyclerView currentlyReadingRecyclerView;
@@ -63,6 +64,7 @@ public class UserProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_profile);
 
         profileImageView = findViewById(R.id.profileImageView);
+        logoutButton = findViewById(R.id.logoutButton);
 
         currentlyReadingRecyclerView = findViewById(R.id.currentlyReadingRecyclerView);
         currentlyReadingAdapter = new CurrentlyReadingAdapter(this, currentlyReadingBooks);
@@ -82,8 +84,14 @@ public class UserProfileActivity extends AppCompatActivity {
         loadUserProfile();
 
         profileImageView.setOnClickListener(v -> pickImageFromGallery());
-    }
+        logoutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(UserProfileActivity.this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
 
+    }
     private void loadUserProfile() {
         dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,12 +16,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="BOOKRATE"
-            android:textSize="24sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:background="@android:color/holo_purple"
+            android:textColor="@color/accentGreen"
             android:padding="12dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="8dp"
             android:gravity="center" />
 
         <ImageView
@@ -54,6 +54,15 @@
             android:layout_height="wrap_content"
             android:spinnerMode="dropdown" />
 
+        <TextView
+            android:id="@+id/averageRatingText1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Your rating:"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp" />
+
         <RatingBar
             android:id="@+id/detailUserRatingBar"
             android:layout_width="wrap_content"
@@ -78,31 +87,40 @@
             android:layout_height="wrap_content"
             android:text="Average: 0.0"
             android:textSize="16sp"
+            android:textStyle="bold"
             android:layout_marginTop="4dp" />
 
-        <!-- ✅ NEW: Start Chat Button -->
         <Button
             android:id="@+id/startChatButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/buttonWhite"
+            android:background="@drawable/rounded_button"
             android:text="Start chatting with the author"
             android:layout_marginTop="12dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:visibility="gone" />
 
         <Button
             android:id="@+id/writeReviewButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/buttonWhite"
+            android:background="@drawable/rounded_button"
             android:text="Write a Review"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/reviewSectionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reviews"
-            android:textSize="18sp"
+            android:text="REVIEWS:"
+            android:textColor="@color/accentGreen"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:layout_marginTop="16dp"
             android:visibility="gone" />

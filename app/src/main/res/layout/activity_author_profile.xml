@@ -13,15 +13,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Author Name"
-        android:textSize="22sp"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="#4A148C"
+        android:textColor="@color/accentGreen"
         android:layout_marginBottom="24dp" />
 
     <ImageView
         android:id="@+id/authorProfileImageView"
-        android:layout_width="160dp"
-        android:layout_height="160dp"
+        android:layout_width="200dp"
+        android:layout_height="280dp"
         android:src="@drawable/placeholder_image"
         android:scaleType="centerCrop"
         android:background="@android:color/darker_gray"
@@ -32,17 +32,45 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Books Written:"
-        android:textSize="18sp"
+        android:text="Behind every great book is a brave author. Thank you for being one."
+        android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="#4A148C"
+        android:textColor="@color/accentGreen"
         android:layout_marginBottom="8dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <Button
+        android:id="@+id/createReaderAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CREATE A READER ACCOUNT"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        android:textSize="18sp"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/logoutButton1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="LOGOUT"
+        android:layout_marginTop="2dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:textSize="18sp"
+        android:textColor="@color/buttonWhite"
+        android:background="@drawable/rounded_button"
+        android:layout_marginBottom="24dp" />
+
+
+
+  <!--  <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/booksWrittenRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="4dp"
-        android:scrollbars="horizontal" />
+        android:scrollbars="horizontal" />-->
 
 </LinearLayout>

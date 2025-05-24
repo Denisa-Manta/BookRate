@@ -2,93 +2,111 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    android:padding="16dp">
+    android:padding="8dp"
+    android:background="@android:color/white">
 
-    <!-- Author Profile Button -->
-    <ImageButton
-        android:id="@+id/authorProfileButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/icon_profile_2"
-        android:background="@android:color/transparent"
-        android:scaleType="fitCenter"
+    <!-- BookRate Logo -->
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
         android:adjustViewBounds="true"
-        android:contentDescription="Author Profile"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo"
+        android:contentDescription="BookRate Logo"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <!-- Active Chats with Badge -->
-    <FrameLayout
-        android:id="@+id/chatButtonContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/authorProfileButton"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp">
-
-        <ImageButton
-            android:id="@+id/openActiveChatsButton"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@android:color/transparent"
-            android:src="@android:drawable/ic_menu_send"
-            android:contentDescription="Open Active Chats" />
-
-        <TextView
-            android:id="@+id/chatBadgeTextView"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="top|end"
-            android:gravity="center"
-            android:background="@drawable/badge_background"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            android:text="0"
-            android:visibility="visible"/>
-    </FrameLayout>
-
-    <!-- Chat Requests Button -->
-    <ImageButton
-        android:id="@+id/openChatRequestsButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@android:drawable/ic_dialog_email"
-        android:background="@android:color/transparent"
-        android:contentDescription="Open Chat Requests"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/chatButtonContainer"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp" />
-
-    <!-- Welcome Text -->
-    <TextView
-        android:id="@+id/authorWelcomeText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Welcome, Author!"
-        android:textSize="24sp"
-        android:textColor="@android:color/holo_red_dark"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/openChatRequestsButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView -->
+    <!-- Icon Row Centered -->
+    <LinearLayout
+        android:id="@+id/iconRow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/logoImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Chat Requests -->
+        <ImageButton
+            android:id="@+id/openChatRequestsButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_baseline_free_cancellation_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Open Chat Requests" />
+
+        <!-- Active Chats with Badge -->
+        <FrameLayout
+            android:id="@+id/chatButtonContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/openActiveChatsButton"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_baseline_message_24"
+                android:contentDescription="Open Active Chats" />
+
+            <TextView
+                android:id="@+id/chatBadgeTextView"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="top|end"
+                android:gravity="center"
+                android:background="@drawable/badge_background"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:text="0"
+                android:visibility="visible"/>
+        </FrameLayout>
+
+        <!-- Profile -->
+        <ImageButton
+            android:id="@+id/authorProfileButton"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_baseline_manage_accounts_24"
+            android:background="@android:color/transparent"
+            android:contentDescription="Author Profile" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/yourBooksLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Your Books:"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="@color/accentGreen"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/iconRow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!-- RecyclerView for Author Books -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/authorBooksRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/authorWelcomeText"
+        android:layout_marginTop="20dp"
+        app:layout_constraintTop_toBottomOf="@id/yourBooksLabel"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="12dp" />
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,8 +37,8 @@ public class AuthorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author);
 
-        TextView welcomeText = findViewById(R.id.authorWelcomeText);
-        welcomeText.setText("Welcome, Author!");
+        /*TextView welcomeText = findViewById(R.id.authorWelcomeText);
+        welcomeText.setText("Welcome, Author!");*/
 
         authorBooksRecyclerView = findViewById(R.id.authorBooksRecyclerView);
         authorBooksRecyclerView.setLayoutManager(new LinearLayoutManager(this));
