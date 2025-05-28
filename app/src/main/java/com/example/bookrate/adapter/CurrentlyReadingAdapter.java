@@ -14,6 +14,12 @@ import com.bumptech.glide.Glide;
 import com.example.bookrate.R;
 import com.example.bookrate.activity.BookDetailActivity;
 import com.example.bookrate.model.Book;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
@@ -21,6 +27,7 @@ public class CurrentlyReadingAdapter extends RecyclerView.Adapter<CurrentlyReadi
 
     private final List<Book> bookList;
     private final Context context;
+    private final DatabaseReference usersRef = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/").getReference("users");
 
     public CurrentlyReadingAdapter(Context context, List<Book> bookList) {
         this.context = context;
@@ -45,10 +52,46 @@ public class CurrentlyReadingAdapter extends RecyclerView.Adapter<CurrentlyReadi
         holder.image.setVisibility(View.GONE); // Optional: hide ImageView
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), BookDetailActivity.class);
-            intent.putExtra("book", book);  // book must implement Serializable or Parcelable
-            holder.itemView.getContext().startActivity(intent);
+            String bookId = book.getId();
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            DatabaseReference userBookRef = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+                    .getReference("users")
+                    .child(userId)
+                    .child("bookStates")
+                    .child(bookId);
+
+            usersRef.child(userId).child("bookStates").child(bookId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        String state = snapshot.child("state").getValue(String.class);
+                        Long ratingLong = snapshot.child("rating").getValue(Long.class);
+
+                        if (state != null) {
+                            book.setState(state);
+                        }
+                        if (ratingLong != null) {
+                            book.setRating(ratingLong.intValue());
+                        }
+                    }
+
+                    // ✅ Proceed to detail view only after state is loaded
+                    Intent intent = new Intent(holder.itemView.getContext(), BookDetailActivity.class);
+                    intent.putExtra("book", book);
+                    holder.itemView.getContext().startActivity(intent);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    // fallback if needed
+                    Intent intent = new Intent(holder.itemView.getContext(), BookDetailActivity.class);
+                    intent.putExtra("book", book);
+                    holder.itemView.getContext().startActivity(intent);
+                }
+            });
         });
+
     }
 
     @Override
