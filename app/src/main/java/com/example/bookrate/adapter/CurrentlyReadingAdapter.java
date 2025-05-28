@@ -48,8 +48,14 @@ public class CurrentlyReadingAdapter extends RecyclerView.Adapter<CurrentlyReadi
         holder.title.setText(book.getTitle() != null ? book.getTitle() : "Unknown Title");
         holder.author.setText(book.getAuthor() != null ? book.getAuthor() : "Unknown Author");
 
-        // Temporarily hide image completely
-        holder.image.setVisibility(View.GONE); // Optional: hide ImageView
+        if (book.getImageUrl() != null && !book.getImageUrl().isEmpty()) {
+            Glide.with(context)
+                    .load(book.getImageUrl())
+                    .placeholder(R.drawable.placeholder_image)
+                    .into(holder.image);
+        } else {
+            holder.image.setImageResource(R.drawable.placeholder_image);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             String bookId = book.getId();
