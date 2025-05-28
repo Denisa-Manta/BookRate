@@ -55,11 +55,6 @@ public class CurrentlyReadingAdapter extends RecyclerView.Adapter<CurrentlyReadi
             String bookId = book.getId();
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-            DatabaseReference userBookRef = FirebaseDatabase.getInstance("https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
-                    .getReference("users")
-                    .child(userId)
-                    .child("bookStates")
-                    .child(bookId);
 
             usersRef.child(userId).child("bookStates").child(bookId).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
