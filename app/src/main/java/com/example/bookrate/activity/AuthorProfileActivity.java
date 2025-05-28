@@ -28,7 +28,6 @@ public class AuthorProfileActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private Button logoutButton1, createReaderAccount;
     private TextView authorNameTextView;
-   // private RecyclerView booksWrittenRecyclerView;
     private CurrentlyReadingAdapter booksAdapter;
     private final List<Book> booksWritten = new ArrayList<>();
 
@@ -54,12 +53,10 @@ public class AuthorProfileActivity extends AppCompatActivity {
         createReaderAccount = findViewById(R.id.createReaderAccount);
         profileImageView = findViewById(R.id.authorProfileImageView);
         authorNameTextView = findViewById(R.id.authorNameTextView);
-      //  booksWrittenRecyclerView = findViewById(R.id.booksWrittenRecyclerView);
 
         booksAdapter = new CurrentlyReadingAdapter(this, booksWritten);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-       /* booksWrittenRecyclerView.setLayoutManager(layoutManager);
-        booksWrittenRecyclerView.setAdapter(booksAdapter);*/
+
 
         loadAuthorProfile();
         profileImageView.setOnClickListener(v -> pickImageFromGallery());
@@ -94,25 +91,6 @@ public class AuthorProfileActivity extends AppCompatActivity {
                             .placeholder(R.drawable.placeholder_image)
                             .into(profileImageView);
                 }
-
-                // Load books written by this author
-                booksRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot booksSnapshot) {
-                        booksWritten.clear();
-                        for (DataSnapshot snap : booksSnapshot.getChildren()) {
-                            Book book = snap.getValue(Book.class);
-                            if (book != null && authorNameTextView.getText().toString().equals(book.getAuthor())) {
-                                book.setId(snap.getKey());
-                                booksWritten.add(book);
-                            }
-                        }
-                        booksAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {}
-                });
             }
 
             @Override
