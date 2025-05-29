@@ -52,8 +52,7 @@ public class ReaderActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reader);
 
         ImageView backButton = findViewById(R.id.backButton);
-        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
-
+        backButton.setOnClickListener(v -> onBackPressed());
 
         recyclerView = findViewById(R.id.bookRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -205,5 +204,22 @@ public class ReaderActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        String query = searchEditText.getText().toString().trim();
+
+        if (!query.isEmpty()) {
+            // Clear the search and restore full list
+            searchEditText.setText("");
+            bookList.clear();
+            bookList.addAll(fullBookList);
+            bookAdapter.notifyDataSetChanged();
+        } else {
+            // No search active → behave normally (exit activity)
+            super.onBackPressed();
+        }
+    }
+
 
 }
