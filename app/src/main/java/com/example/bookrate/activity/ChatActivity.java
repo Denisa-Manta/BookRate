@@ -41,6 +41,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
+
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
         messageInput = findViewById(R.id.chatMessageInput);
         sendChatMessageButton = findViewById(R.id.sendChatMessageButton);

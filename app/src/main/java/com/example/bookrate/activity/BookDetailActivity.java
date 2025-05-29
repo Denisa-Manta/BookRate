@@ -42,6 +42,9 @@ public class BookDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
         detailBookTitle = findViewById(R.id.detailBookTitle);
         detailBookAuthor = findViewById(R.id.detailBookAuthor);
         detailBookGenre = findViewById(R.id.detailBookGenre);

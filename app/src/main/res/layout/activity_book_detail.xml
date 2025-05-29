@@ -1,136 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
+    android:orientation="vertical"
     android:background="#FFFFFF">
 
-    <LinearLayout
+    <include layout="@layout/custom_toolbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/detailBookTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BOOKRATE"
-            android:textSize="30sp"
-            android:textStyle="bold"
-            android:textColor="@color/accentGreen"
-            android:padding="12dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center" />
-
-        <ImageView
-            android:id="@+id/detailBookImage"
-            android:layout_width="150dp"
-            android:layout_height="220dp"
-            android:layout_marginBottom="12dp"
-            android:contentDescription="Book Cover"
-            android:background="#DDDDDD" />
-
-        <TextView
-            android:id="@+id/detailBookAuthor"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Author"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:id="@+id/detailBookGenre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Genre"
-            android:textSize="16sp"
-            android:layout_marginBottom="12dp" />
-
-        <Spinner
-            android:id="@+id/detailBookStateSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown" />
-
-        <TextView
-            android:id="@+id/averageRatingText1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your rating:"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
-
-        <RatingBar
-            android:id="@+id/detailUserRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="1"
-            android:isIndicator="false"
-            android:layout_marginTop="8dp" />
-
-        <RatingBar
-            android:id="@+id/detailAverageRatingBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:stepSize="0.1"
-            android:isIndicator="true"
-            android:layout_marginTop="16dp" />
-
-        <TextView
-            android:id="@+id/averageRatingText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Average: 0.0"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
-
-        <Button
-            android:id="@+id/startChatButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/buttonWhite"
-            android:background="@drawable/rounded_button"
-            android:text="Start chatting with the author"
-            android:layout_marginTop="12dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/writeReviewButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@color/buttonWhite"
-            android:background="@drawable/rounded_button"
-            android:text="Write a Review"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/reviewSectionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="REVIEWS:"
-            android:textColor="@color/accentGreen"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="16dp"
-            android:visibility="gone" />
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
         <LinearLayout
-            android:id="@+id/reviewsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginTop="8dp"
-            android:visibility="gone" />
-    </LinearLayout>
-</ScrollView>
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/detailBookTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BOOKRATE"
+                android:textSize="30sp"
+                android:textStyle="bold"
+                android:textColor="@color/accentGreen"
+                android:padding="12dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center" />
+
+            <ImageView
+                android:id="@+id/detailBookImage"
+                android:layout_width="150dp"
+                android:layout_height="220dp"
+                android:layout_marginBottom="12dp"
+                android:contentDescription="Book Cover"
+                android:background="#DDDDDD" />
+
+            <TextView
+                android:id="@+id/detailBookAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Author"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/detailBookGenre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Genre"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp" />
+
+            <Spinner
+                android:id="@+id/detailBookStateSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+
+            <TextView
+                android:id="@+id/averageRatingText1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your rating:"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+
+            <RatingBar
+                android:id="@+id/detailUserRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="1"
+                android:isIndicator="false"
+                android:layout_marginTop="8dp" />
+
+            <RatingBar
+                android:id="@+id/detailAverageRatingBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:stepSize="0.1"
+                android:isIndicator="true"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:id="@+id/averageRatingText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Average: 0.0"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginTop="4dp" />
+
+            <Button
+                android:id="@+id/startChatButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/buttonWhite"
+                android:background="@drawable/rounded_button"
+                android:text="Start chatting with the author"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/writeReviewButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/buttonWhite"
+                android:background="@drawable/rounded_button"
+                android:text="Write a Review"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/reviewSectionTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="REVIEWS:"
+                android:textColor="@color/accentGreen"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/reviewsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp"
+                android:visibility="gone" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

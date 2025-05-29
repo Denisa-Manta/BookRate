@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,8 +38,8 @@ public class AuthorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_author);
 
-        /*TextView welcomeText = findViewById(R.id.authorWelcomeText);
-        welcomeText.setText("Welcome, Author!");*/
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
 
         authorBooksRecyclerView = findViewById(R.id.authorBooksRecyclerView);
         authorBooksRecyclerView.setLayoutManager(new LinearLayoutManager(this));

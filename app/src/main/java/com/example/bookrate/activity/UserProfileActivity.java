@@ -63,6 +63,9 @@ public class UserProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
 
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
         profileImageView = findViewById(R.id.profileImageView);
         logoutButton = findViewById(R.id.logoutButton);
 

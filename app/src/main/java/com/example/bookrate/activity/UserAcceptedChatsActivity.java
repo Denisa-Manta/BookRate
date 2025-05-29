@@ -2,6 +2,7 @@ package com.example.bookrate.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,6 +35,10 @@ public class UserAcceptedChatsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_accepted_chats);
+
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
 
         userAcceptedChatsRecyclerView = findViewById(R.id.userAcceptedChatsRecyclerView);
         userAcceptedChatsRecyclerView.setLayoutManager(new LinearLayoutManager(this));

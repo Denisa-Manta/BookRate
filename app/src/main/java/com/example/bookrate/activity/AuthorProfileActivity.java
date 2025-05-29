@@ -54,6 +54,9 @@ public class AuthorProfileActivity extends AppCompatActivity {
         profileImageView = findViewById(R.id.authorProfileImageView);
         authorNameTextView = findViewById(R.id.authorNameTextView);
 
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
         booksAdapter = new CurrentlyReadingAdapter(this, booksWritten);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
 

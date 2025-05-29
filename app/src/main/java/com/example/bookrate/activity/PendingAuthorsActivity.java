@@ -1,6 +1,7 @@
 package com.example.bookrate.activity;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,9 @@ public class PendingAuthorsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pending_authors);
+
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
 
         recyclerView = findViewById(R.id.pendingAuthorsLayout);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

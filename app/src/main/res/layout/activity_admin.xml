@@ -7,17 +7,26 @@
     android:background="@android:color/white"
     tools:context=".activity.AdminActivity">
 
+    <include
+        android:id="@+id/customToolbar"
+        layout="@layout/custom_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="68dp"
         android:layout_marginBottom="16dp"
         android:adjustViewBounds="true"
         android:scaleType="fitCenter"
         android:src="@drawable/logo"
         android:contentDescription="BookRate logo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -41,12 +50,12 @@
         android:text="Add Book"
         android:textColor="@color/buttonWhite"
         android:background="@drawable/rounded_button"
-        app:layout_constraintTop_toBottomOf="@id/adminIllustration"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="54dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp" />
+        android:layout_marginEnd="32dp"
+        app:layout_constraintTop_toBottomOf="@id/adminIllustration"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/viewAllBooksButton"
@@ -55,12 +64,12 @@
         android:text="View All Books"
         android:textColor="@color/buttonWhite"
         android:background="@drawable/rounded_button"
-        app:layout_constraintTop_toBottomOf="@id/addBookButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp" />
+        android:layout_marginEnd="32dp"
+        app:layout_constraintTop_toBottomOf="@id/addBookButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/viewAuthorsButton"
@@ -69,11 +78,11 @@
         android:text="View Author Requests"
         android:textColor="@color/buttonWhite"
         android:background="@drawable/rounded_button"
-        app:layout_constraintTop_toBottomOf="@id/viewAllBooksButton"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp" />
+        android:layout_marginEnd="32dp"
+        app:layout_constraintTop_toBottomOf="@id/viewAllBooksButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

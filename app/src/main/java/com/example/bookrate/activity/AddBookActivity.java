@@ -39,6 +39,9 @@ public class AddBookActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_book);
 
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
+
         titleEditText = findViewById(R.id.titleEditText);
         authorEditText = findViewById(R.id.authorEditText);
         uploadButton = findViewById(R.id.uploadButton);

@@ -2,6 +2,7 @@ package com.example.bookrate.activity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,9 @@ public class AdminBookActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_admin_book);
+
+        ImageView backButton = findViewById(R.id.backButton);
+        backButton.setOnClickListener(v -> finish()); // 🔙 closes current activity and goes back
 
         adminBooksRecyclerView = findViewById(R.id.adminBooksRecyclerView);
         adminBooksRecyclerView.setLayoutManager(new LinearLayoutManager(this));

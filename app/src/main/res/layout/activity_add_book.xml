@@ -1,114 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/white">
 
-    <LinearLayout
+    <include
+        layout="@layout/custom_toolbar"
+        android:id="@+id/customToolbar" />
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="24dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/logoImage"
-            android:layout_width="260dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:layout_marginBottom="32dp"
-            android:src="@drawable/logo"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            android:contentDescription="BookRate logo" />
-
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"
-            app:cardBackgroundColor="@android:color/white"
-            app:strokeColor="@color/accentGreen"
-            app:strokeWidth="2dp"
-            app:cardCornerRadius="12dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="24dp">
 
             <ImageView
-                android:id="@+id/bookImageView"
-                android:layout_width="160dp"
-                android:layout_height="160dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_image_241"
-                android:contentDescription="Book Cover" />
-        </com.google.android.material.card.MaterialCardView>
+                android:id="@+id/logoImage"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="43dp"
+                android:layout_marginBottom="32dp"
+                android:src="@drawable/logo"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                android:contentDescription="BookRate logo" />
 
-        <Button
-            android:id="@+id/chooseImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Choose Image"
-            android:textColor="@color/buttonWhite"
-            android:background="@drawable/rounded_button"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="24dp" />
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="@android:color/white"
+                app:strokeColor="@color/accentGreen"
+                app:strokeWidth="2dp"
+                app:cardCornerRadius="12dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxStrokeColor="@color/accentGreen"
-            app:startIconDrawable="@drawable/ic_baseline_menu_book_24"
-            app:startIconTint="@color/accentGreen">
+                <ImageView
+                    android:id="@+id/bookImageView"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_image_241"
+                    android:contentDescription="Book Cover" />
+            </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/titleEditText"
+            <Button
+                android:id="@+id/chooseImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose Image"
+                android:textColor="@color/buttonWhite"
+                android:background="@drawable/rounded_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Title" />
-        </com.google.android.material.textfield.TextInputLayout>
+                app:boxBackgroundMode="filled"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxBackgroundColor="@android:color/white"
+                app:boxStrokeColor="@color/accentGreen"
+                app:startIconDrawable="@drawable/ic_baseline_menu_book_24"
+                app:startIconTint="@color/accentGreen">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxBackgroundColor="@android:color/white"
-            app:boxStrokeColor="@color/accentGreen"
-            app:startIconDrawable="@drawable/ic_baseline_person_pin_24"
-            app:startIconTint="@color/accentGreen">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/authorEditText"
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Author" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="16dp"
+                app:boxBackgroundMode="filled"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxBackgroundColor="@android:color/white"
+                app:boxStrokeColor="@color/accentGreen"
+                app:startIconDrawable="@drawable/ic_baseline_person_pin_24"
+                app:startIconTint="@color/accentGreen">
 
-        <Spinner
-            android:id="@+id/genreSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/authorEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Author" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/uploadButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Upload Book"
-            android:textColor="@color/buttonWhite"
-            android:background="@drawable/rounded_button"
-            android:layout_gravity="center"
-            android:layout_marginTop="32dp" />
+            <Spinner
+                android:id="@+id/genreSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
 
-    </LinearLayout>
-</ScrollView>
+            <Button
+                android:id="@+id/uploadButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Book"
+                android:textColor="@color/buttonWhite"
+                android:background="@drawable/rounded_button"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

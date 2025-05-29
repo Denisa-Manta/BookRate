@@ -7,7 +7,15 @@
     tools:context=".activity.AuthorChatRequestsActivity"
     android:background="@android:color/white">
 
-    <!-- BookRate Logo -->
+    <include
+        android:id="@+id/customToolbar"
+        layout="@layout/custom_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageView
         android:id="@+id/logoImage"
         android:layout_width="200dp"
@@ -17,7 +25,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/logo"
         android:contentDescription="BookRate Logo"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/customToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -33,7 +41,6 @@
         app:layout_constraintTop_toBottomOf="@id/logoImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
-
 
     <TextView
         android:id="@+id/chatRequestTitle"
@@ -54,12 +61,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:padding="8dp"
+        android:background="@drawable/shae_recycler_view"
         app:layout_constraintTop_toBottomOf="@+id/chatRequestTitle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
