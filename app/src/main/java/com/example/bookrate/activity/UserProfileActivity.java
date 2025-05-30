@@ -220,6 +220,8 @@ public class UserProfileActivity extends AppCompatActivity {
                             for (Book book : allBooks) {
                                 if (genre.equals(book.getGenre()) &&
                                         "Want to Read".equalsIgnoreCase(userStates.get(book.getId())) &&
+                                        !"Currently Reading".equalsIgnoreCase(userStates.get(book.getId())) &&
+                                        !"Read".equalsIgnoreCase(userStates.get(book.getId())) &&
                                         !usedGenres.contains(genre)) {
                                     Log.d("STATE_BOOK_GENRE_USED:", book.getId());
                                     recommendedBooks.add(book);
@@ -243,10 +245,15 @@ public class UserProfileActivity extends AppCompatActivity {
                             Set<String> seenGenres = new HashSet<>();
                             for (Book book : allBooks) {
                                 String genre = book.getGenre();
-                                if (!seenGenres.contains(genre)) {
+                                String state = userStates.get(book.getId());
+
+                                if (!seenGenres.contains(genre)
+                                        && !"Currently Reading".equalsIgnoreCase(state)
+                                        && !"Read".equalsIgnoreCase(state)) {
                                     recommendedBooks.add(book);
                                     seenGenres.add(genre);
                                 }
+
                                 if (recommendedBooks.size() >= 3) break;
                             }
                         }
