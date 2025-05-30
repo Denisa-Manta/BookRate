@@ -33,6 +33,8 @@ public class AuthorChatRequestsActivity extends AppCompatActivity {
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("chat_requests");
 
+    String currentAuthorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,7 +74,9 @@ public class AuthorChatRequestsActivity extends AppCompatActivity {
                 requests.clear();
                 for (DataSnapshot requestSnap : snapshot.getChildren()) {
                     ChatRequest request = requestSnap.getValue(ChatRequest.class);
-                    if (request != null && "pending".equals(request.getStatus())) {
+                    if (request != null &&
+                            "pending".equals(request.getStatus()) &&
+                            currentAuthorId.equals(request.getAuthorId())) {
                         requests.add(request);
                     }
                 }

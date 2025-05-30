@@ -13,6 +13,7 @@ import com.example.bookrate.R;
 import com.example.bookrate.adapter.ChatRequestAdapter;
 import com.example.bookrate.model.ChatRequest;
 import com.example.bookrate.util.OnChatRequestActionListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
@@ -27,6 +28,8 @@ public class AuthorAcceptedChatsActivity extends AppCompatActivity {
     private final DatabaseReference dbRef = FirebaseDatabase.getInstance(
             "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
             .getReference("chat_requests");
+
+    private final String currentAuthorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +58,9 @@ public class AuthorAcceptedChatsActivity extends AppCompatActivity {
                 acceptedChats.clear();
                 for (DataSnapshot snap : snapshot.getChildren()) {
                     ChatRequest request = snap.getValue(ChatRequest.class);
-                    if (request != null && "accepted".equals(request.getStatus())) {
+                    if (request != null &&
+                            "accepted".equals(request.getStatus()) &&
+                            currentAuthorId.equals(request.getAuthorId())) {
                         acceptedChats.add(request);
                     }
                 }

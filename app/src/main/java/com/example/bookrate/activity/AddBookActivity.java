@@ -32,6 +32,10 @@ public class AddBookActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Uri selectedImageUri;
 
+    private final DatabaseReference usersRef = FirebaseDatabase.getInstance(
+            "https://bookrate-4dc23-default-rtdb.europe-west1.firebasedatabase.app/")
+            .getReference("users");
+
     private static final int IMAGE_PICK_CODE = 3001;
 
     @Override
@@ -96,21 +100,54 @@ public class AddBookActivity extends AppCompatActivity {
             return;
         }
 
-        String authorId = currentUser.getUid();
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                String authorId = null;
 
-        if (selectedImageUri != null) {
-            String imageName = UUID.randomUUID().toString() + ".jpg";
-            StorageReference imageRef = storage.getReference("book_images").child(imageName);
+                for (DataSnapshot userSnap : snapshot.getChildren()) {
+                    String name = userSnap.child("name").getValue(String.class);
+                    String role = userSnap.child("role").getValue(String.class);
 
-            imageRef.putFile(selectedImageUri)
-                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        saveBookToDatabase(title, author, genre, uri.toString(), authorId);
-                    }))
-                    .addOnFailureListener(e -> Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show());
-        } else {
-            saveBookToDatabase(title, author, genre, null, authorId);
-        }
+                    // ✅ compare typed name with name from DB
+                    if (author.equals(name) && "author".equalsIgnoreCase(role)) {
+                        authorId = userSnap.getKey();  // 🔥 this is what we want
+                        break;
+                    }
+                }
+
+                final String finalAuthorID = authorId;
+
+                // Now continue exactly with your existing logic
+                if (authorId != null) {
+                    if (selectedImageUri != null) {
+                        String imageName = UUID.randomUUID().toString() + ".jpg";
+                        StorageReference imageRef = storage.getReference("book_images").child(imageName);
+
+                        imageRef.putFile(selectedImageUri)
+                                .addOnSuccessListener(taskSnapshot ->
+                                        imageRef.getDownloadUrl().addOnSuccessListener(uri ->
+                                                saveBookToDatabase(title, author, genre, uri.toString(), finalAuthorID)
+                                        )
+                                )
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(AddBookActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show()
+                                );
+                    } else {
+                        saveBookToDatabase(title, author, genre, null, finalAuthorID);
+                    }
+                } else {
+                    Toast.makeText(AddBookActivity.this, "Author not found or not approved", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Toast.makeText(AddBookActivity.this, "Error loading authors", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     private void saveBookToDatabase(String title, String author, String genre, String imageUrl, String authorId) {
         Book book = new Book(title, author, genre, imageUrl, authorId);
