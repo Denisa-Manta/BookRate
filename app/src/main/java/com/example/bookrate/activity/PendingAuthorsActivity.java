@@ -104,7 +104,7 @@ public class PendingAuthorsActivity extends AppCompatActivity {
                             pendingRef.removeValue();
                             pendingAuthors.remove(position);
                             userIds.remove(position);
-                            adapter.notifyItemRemoved(position);
+                            adapter.notifyDataSetChanged();
                             Toast.makeText(PendingAuthorsActivity.this, "Author accepted", Toast.LENGTH_SHORT).show();
                         });
                     }
@@ -123,7 +123,7 @@ public class PendingAuthorsActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     pendingAuthors.remove(position);
                     userIds.remove(position);
-                    adapter.notifyItemRemoved(position);
+                    adapter.notifyDataSetChanged();
                     Toast.makeText(PendingAuthorsActivity.this, "Author rejected", Toast.LENGTH_SHORT).show();
                 });
     }
